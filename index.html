@@ -21,18 +21,41 @@
 
 .top-banner {
   width: 100%;
-  text-align: center;
-  font-size: 14px;
-  padding: 10px 0;
-  background: #f9f9fb;
-  color: #4B0082;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  border-bottom: 1px solid #eee;
-  position: fixed; /* stick at the very top */
+  position: fixed;
   top: 0;
   left: 0;
+  background: #f9f9fb;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  text-align: center;   /* keeps center text centered */
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B0082;
+  z-index: 3000;
 }
+
+.banner-left, 
+.banner-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.banner-left {
+  left: 20px;   /* stays at left */
+}
+
+.banner-right {
+  right: 20px;  /* stays at right */
+}
+
+.contact-link {
+  margin-left: 20px;
+  color: #6E56CF;
+  font-weight: 600;
+  text-decoration: none;
+}
+
 
 .content {
   flex: 1; /* take up remaining space */
@@ -50,9 +73,14 @@
   </style>
 </head>
 <body>
-  <div class="top-banner">
-    Made by <strong>ForSit Media</strong>
+<div class="top-banner">
+  <div class="banner-left"></div>
+  <div class="banner-center">Made by <strong>ForSit Media</strong></div>
+  <div class="banner-right">
+    <a href="contact.html" class="contact-link">Contact</a>
   </div>
+</div>
+
 
   <div class="content">
     <h1><span class="highlight">Portugal</span><br>We are coming soon</h1>
