@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Photos — ForSit Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+ <link rel="icon" href="images/short content videos/logo navbar.png" type="image/svg+xml">
+
+<style>
+  :root{ --wrap-w:1100px; --ink:#fff; --muted:#a9a9b6; --border:rgba(255,255,255,.18); }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--ink);
+    background:radial-gradient(1200px 800px at 20% -10%,#14151c 0%,#0b0c10 48%,#0b0c10 100%);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    padding-top:calc(64px + 24px); padding-left:16px; padding-right:16px; padding-bottom:80px;
+  }
+
+  /* Mini liquid-glass navbar */
+  .mini-nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(12px) saturate(140%); -webkit-backdrop-filter:blur(12px) saturate(140%);
+  }
+  .mini-inner{max-width:var(--wrap-w);height:64px;margin:0 auto;padding:0 16px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .mini-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:900;}
+  .mini-logo{height:34px;width:auto;display:block;}
+  .mini-name{opacity:.9;font-size:15px;}
+  .mini-actions{display:flex;gap:10px;}
+  .mini-btn{display:inline-grid;place-items:center;height:40px;padding:0 14px;border-radius:999px;
+    text-decoration:none;font-weight:800;font-size:14px;letter-spacing:.2px;transition:transform .15s,box-shadow .15s,background .15s;}
+  .mini-primary{color:#111;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.75));
+    border:1px solid rgba(255,255,255,.6); box-shadow:0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.85);}
+  .mini-ghost{color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.35); box-shadow:0 10px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);}
+  .mini-btn:hover{transform:translateY(-1px)} .mini-btn:active{transform:translateY(0) scale(.98)}
+  @media (max-width:640px){ .mini-name{display:none} .mini-actions .mini-btn{height:38px;padding:0 12px;font-size:13px} }
+
+  .head{max-width:var(--wrap-w);margin:0 auto 16px;text-align:center;}
+  .head h1{margin:0;font-size:clamp(24px,4.6vw,44px);font-weight:900;letter-spacing:.2px}
+  .head p{margin:8px 0 0;color:var(--muted)}
+
+  /* Carousel stage */
+  .stage-wrap{max-width:var(--wrap-w);margin:18px auto 0;}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;
+    box-shadow:0 26px 70px rgba(0,0,0,.55);}
+  .slides{position:relative;width:100%;height:100%;}
+  .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;}
+  .slide.active{opacity:1;}
+  .slide .backdrop{position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;
+    filter:blur(20px) brightness(.9) saturate(1.05);transform:scale(1.05);z-index:0;}
+  .slide .main{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;display:block;}
+  .stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.38) 100%);z-index:2;pointer-events:none;}
+  .caption{position:absolute;left:18px;bottom:12px;z-index:3;font-weight:800;letter-spacing:.3px;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));
+    border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:10px;font-size:13px;text-shadow:0 1px 0 rgba(0,0,0,.3);}
+
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:999px;z-index:4;
+    display:grid;place-items:center;cursor:pointer;user-select:none;color:#fff;border:1px solid rgba(255,255,255,.35);
+    background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+    box-shadow:0 12px 28px rgba(0,0,0,.40), inset 0 1px 0 rgba(255,255,255,.55);
+    backdrop-filter:blur(12px) saturate(140%); -webkit-backdrop-filter:blur(12px) saturate(140%);
+    transition:transform .18s,box-shadow .18s;}
+  .arrow:hover{transform:translateY(-50%) translateY(-1px)} .arrow:active{transform:translateY(-50%) scale(.96)}
+  .arrow svg{width:20px;height:20px} .arrow.left{left:10px} .arrow.right{right:10px}
+
+  .dots{display:flex;gap:6px;justify-content:center;margin-top:10px;user-select:none;}
+  .dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.35);}
+  .dot.active{background:#fff}
+
+  .strip{max-width:var(--wrap-w);margin:12px auto 0;color:var(--muted);text-align:center;font-size:14px;}
+
+  /* Story/approach section */
+  .story{max-width:var(--wrap-w);margin:26px auto 0;padding:18px;border-radius:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.06));
+    border:1px solid var(--border); box-shadow:0 20px 50px rgba(0,0,0,.35);}
+  .story h2{margin:0 0 8px;font-size:clamp(18px,2.8vw,28px);font-weight:900;text-align: center;}
+  .story p{margin:0 auto; max-width:max-content;color:#ececf5;line-height:1.6;}
+
+/* CTA block */
+.photo-cta{
+  max-width: var(--wrap-w);
+  margin: 26px auto 0;
+  padding: 22px;
+  border-radius: 16px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.photo-cta h2{ margin: 0 0 8px; font-size: clamp(18px, 2.8vw, 28px); font-weight: 900; }
+.photo-cta p{ margin: 0 0 14px; max-width: 70ch; line-height: 1.6; color: #ececf5; text-align: center; }
+
+/* make the button a bit larger */
+.mini-btn.big{ height: 48px; padding: 0 18px; font-size: 16px; }
+
+.photo-cta{
+  text-align: center;          /* centers text + inline buttons */
+}
+.photo-cta p{
+  max-width: 70ch;             /* nicer line length */
+  margin: 0 auto 14px;         /* centers the paragraph block */
+}
+.photo-cta .mini-btn.big{
+  display: inline-flex;        /* play nice with text-align center */
+  justify-content: center;
+  margin: 0 auto;              /* also centers if parent isn’t centered */
+}
+
+.cta-btn{
+  color:#2b1300;
+  background: linear-gradient(180deg, #ffb476, #ff7b38);
+  border: 1px solid rgba(255,180,118,.7);
+  box-shadow: 0 12px 30px rgba(255,123,56,.45), inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+  footer{
+    max-width: var(--wrap-w);
+    margin: 40px auto 0; color: var(--muted); text-align:center; font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header class="mini-nav" role="banner">
+  <div class="mini-inner">
+    <a class="mini-brand" href="index.html" aria-label="ForSit Media Home">
+      <img src="images/short content videos/logo navbar 2.png" alt="ForSit Media" class="mini-logo">
+      <span class="mini-name">ForSit Media</span>
+    </a>
+    <nav class="mini-actions" aria-label="Quick actions">
+      <a class="mini-btn mini-ghost" href="index.html#services">← Back to our services</a>
+      <a class="mini-btn mini-primary" href="contact.html?reason=social">Get in contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="head">
+  <h1>Photos</h1>
+  <p> We aim to capture the most authentic moments—prioritizing not only image quality,
+    but also curiosity and meaningful detail. Sometimes the unexpected micro-story
+    is more powerful than a perfect frame. Our goal is to find both.</p>
+</section>
+
+<div class="stage-wrap">
+  <div class="stage" id="stage">
+    <div class="slides" id="slides"></div>
+    <button class="arrow left"  id="prev" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="arrow right" id="next" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<p class="strip">Vertical & horizontal photos are shown fully with a soft blurred fill.</p>
+
+
+<!-- Photo inquiry CTA -->
+<section class="photo-cta">
+  <h2>Interested in a photoshoot?</h2>
+  <p>Get in contact with us — we’ll capture authentic moments for your business or event.</p>
+
+  <!-- Preselects the “Video & photo production” reason and pre-fills the message -->
+  <a class="mini-btn big cta-btn"
+   href="contact.html?reason=video&message=I%20am%20interested%20in%20receiving%20a%20photoshoot...%20my%20brand%20name%20is:%20%5Bwrite%20your%20brand/%20company%20name%5D">
+  Get in contact
+</a>
+
+
+
+</section>
+
+<footer>
+  © <span id="year"></span> ForSit Media — All rights reserved.
+</footer>
+
+<script>
+/* ===== Build slides from your folder; auto-scroll; pause/resume ===== */
+(function(){
+  const basePath = "images/photos section/";                 // space is OK; encodeURI handles it
+  const horizontals = new Set([1,2,3,4,6,9,16]);             // 'h' files
+  const total = 21;
+  const tryExts = ["JPG","JPEG","PNG","jpg","jpeg","png"];   // browsers won't show HEIC
+  const slidesEl = document.getElementById('slides');
+  const dotsEl   = document.getElementById('dots');
+  const stage    = document.getElementById('stage');
+  const prevBtn  = document.getElementById('prev');
+  const nextBtn  = document.getElementById('next');
+
+  const slides = [];
+  let idx = 0;
+  let timer = null;
+  const delay = 2700; // ms
+
+  function tryLoad(name, cb){
+    let i = 0;
+    const probe = new Image();
+    function attempt(){
+      if (i >= tryExts.length){
+        console.warn("Skipped (not found):", name);
+        cb(null); return;
+      }
+      const src = encodeURI(basePath + name + "." + tryExts[i++]);
+      probe.onload = ()=> cb(src);
+      probe.onerror = attempt;
+      probe.src = src;
+    }
+    attempt();
+  }
+
+  function addSlide(src){
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    slide.innerHTML = `
+      <img class="backdrop" src="${src}" alt="">
+      <img class="main"     src="${src}" alt="Events • Food • Moments">
+      <div class="caption">Events • Food • Moments</div>
+    `;
+    slidesEl.appendChild(slide);
+    slides.push(slide);
+
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.addEventListener('click', ()=> goTo(slides.length-1,true));
+    dotsEl.appendChild(dot);
+  }
+
+  function goTo(n, user){
+    if (!slides.length) return;
+    idx = (n + slides.length) % slides.length;
+    slides.forEach((s,i)=> s.classList.toggle('active', i===idx));
+    [...dotsEl.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
+    if (user) restartAuto();
+  }
+
+  function next(){ goTo(idx+1,true); }
+  function prev(){ goTo(idx-1,true); }
+
+  function startAuto(){
+    stopAuto();
+    timer = setInterval(()=> goTo(idx+1,false), delay);
+  }
+  function stopAuto(){ if (timer){ clearInterval(timer); timer=null; } }
+  function restartAuto(){ stopAuto(); startAuto(); }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+  window.addEventListener('keydown', e=>{
+    if (e.key==="ArrowLeft")  prev();
+    if (e.key==="ArrowRight") next();
+  });
+
+  // pause on hover / touch
+  stage.addEventListener('mouseenter', stopAuto);
+  stage.addEventListener('mouseleave', startAuto);
+  stage.addEventListener('touchstart', stopAuto, {passive:true});
+  stage.addEventListener('touchend', ()=> setTimeout(startAuto, 1200), {passive:true});
+
+  // build slides
+  (async function build(){
+    for (let n=1; n<=total; n++){
+      const base = horizontals.has(n) ? `image${n}h` : `image${n}`;
+      await new Promise(res=>{
+        tryLoad(base, (src)=>{ if (src) addSlide(src); res(); });
+      });
+    }
+    goTo(0,false);
+    startAuto();
+  })();
+})();
+</script>
+
+
+
+
+  <!-- Footer year auto-update -->
+<script>
+(function () {
+  var y = new Date().getFullYear();
+  // fill any #year or .js-year you might add
+  document.querySelectorAll('#year, .js-year').forEach(function (el) {
+    el.textContent = y;
+  });
+})();
+</script>
+
+
+</body>
+</html>

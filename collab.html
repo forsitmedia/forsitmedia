@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Collaborations — ForSit Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="images/short content videos/logo navbar.png" type="image/svg+xml">
+<style>
+  :root{
+    --wrap-w: 1100px;
+    --bg0: #0b0c10;
+    --bg1: #14151c;
+    --ink: #ffffff;
+    --muted: #a9a9b6;
+    --glass: rgba(255,255,255,.10);
+    --glass-strong: rgba(255,255,255,.16);
+    --border: rgba(255,255,255,.18);
+    --radius: 16px;
+
+    /* badge accents */
+    --violet1:#3a21b982; --violet2:#1779c900; /* video */
+    --cyan1:#0b20c389;  --cyan2:#6514a300;   /* social */
+    --green1:#08bec86f; --green2:#691bc900;  /* web   */
+    --amber1:hsl(38, 90%, 45%); --amber2:#ffb405;  /* full  */
+  }
+
+  *{ box-sizing:border-box; }
+  html, body{ margin:0; }
+  body{
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(1200px 800px at 20% -10%, var(--bg1) 0%, var(--bg0) 48%, var(--bg0) 100%);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding-top: calc(64px + 24px); /* room for fixed mini-nav */
+    padding-left: 16px; padding-right: 16px; padding-bottom: 80px;
+  }
+
+  /* ===== Mini “liquid glass” navbar (logo + two actions) ===== */
+  .mini-nav{
+    position:fixed; top:0; left:0; right:0; height:64px; z-index:10000;
+    background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+    border-bottom:1px solid var(--border);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
+  .mini-inner{
+    max-width: var(--wrap-w);
+    height:64px; margin:0 auto; padding:0 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .mini-brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff; font-weight:900; letter-spacing:.2px; }
+  .mini-logo{ height:34px; width:auto; display:block; }
+  .mini-name{ opacity:.9; font-size:15px; }
+
+  .mini-actions{ display:flex; align-items:center; gap:10px; }
+  .mini-btn{
+    display:inline-grid; place-items:center; height:40px; padding:0 14px; border-radius:999px;
+    text-decoration:none; font-weight:800; font-size:14px; letter-spacing:.2px;
+    transition:transform .15s, box-shadow .15s, background .15s;
+  }
+  .mini-primary{
+    color:#111; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+    border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.85);
+  }
+  .mini-ghost{
+    color:#fff; background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.35);
+    box-shadow:0 10px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);
+  }
+  .mini-btn:hover{ transform:translateY(-1px); }
+  .mini-btn:active{ transform:translateY(0) scale(.98); }
+
+  @media (max-width:640px){
+    .mini-name{ display:none; }
+    .mini-actions .mini-btn{ padding:0 12px; font-size:13px; height:38px; }
+  }
+
+  /* ===== Page header ===== */
+  .head{
+    max-width: var(--wrap-w);
+    margin: 0 auto 16px;
+  }
+  .head h1{
+    font-size: clamp(24px, 4.6vw, 44px);
+    margin: 0 0 6px; letter-spacing:.2px; font-weight:900;
+  }
+  .head p{ margin:0; color:var(--muted); }
+
+  /* ===== Collaboration cards ===== */
+  .collab-list{
+    max-width: var(--wrap-w);
+    margin: 22px auto 0;
+    display: grid;
+    gap: 16px;
+  }
+  .collab-card{
+    display: grid;
+    grid-template-columns: 280px 1fr; /* left (logo/name) | right (rows) */
+    gap: 14px;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 253, 253, 0.06));
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+    transition: transform .18s, box-shadow .18s, background .18s;
+  }
+  .collab-card:hover{ transform: translateY(-2px); box-shadow: 0 24px 60px rgba(0,0,0,.42); }
+
+  .left{
+    display:flex; flex-direction:column; gap:10px; align-items:flex-start;
+  }
+  .logo-box{
+    display:grid; place-items:center; width:50%; height:160px; overflow:hidden;
+    background: rgb(255, 255, 255); border:1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+  }
+  .logo-box img{ max-width: 100%; max-height: 100%; object-fit: contain; display:block; filter: drop-shadow(0 6px 22px rgba(0,0,0,.45)); }
+  .company-name{ margin: 0; font-size: 18px; font-weight: 800; letter-spacing:.2px; }
+
+  .right{
+    display:flex; flex-direction:column; gap: 10px;
+  }
+  .row{
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px;
+    align-items:start;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+    border: 1px solid rgba(255,255,255,.10);
+  }
+  .label{
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing:.2px;
+  }
+  .value{ color: #f0f0f5; }
+
+  /* badges */
+  .badge{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 13px;
+    color:#000000; background:#fff;
+    border:1px solid rgba(255,255,255,.25);
+    box-shadow: 0 10px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.85);
+  }
+  .badge.video  { background: linear-gradient(180deg, var(--violet1), var(--violet2)); color:#fff; }
+  .badge.social { background: linear-gradient(180deg, var(--cyan1),   var(--cyan2));   color:#ffffff; }
+  .badge.web    { background: linear-gradient(180deg, var(--green1),  var(--green2));  color:#ffffff; }
+  .badge.full   { background: linear-gradient(180deg, var(--amber1),  var(--amber2));  color:#ffffff; }
+
+  /* small chips for locations if you want them styled */
+  .chip{
+    display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; font-size:13px;
+    background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18); color:#fff;
+  }
+
+  /* responsive */
+  @media (max-width: 900px){
+    .collab-card{ grid-template-columns: 1fr; }
+    .row{ grid-template-columns: 120px 1fr; }
+  }
+  @media (max-width: 520px){
+    .row{ grid-template-columns: 1fr; }
+    .label{ margin-bottom: 6px; }
+  }
+
+
+
+/* Quick contact CTA container */
+.contact-quick{
+  max-width: var(--wrap-w);
+  margin: 28px auto 0;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  border: 1px solid rgba(255,255,255,.18);
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.contact-title{
+  margin: 0 0 12px;
+  font-size: clamp(16px, 2.6vw, 20px);
+  font-weight: 800;
+}
+
+/* Lay badges in a responsive row */
+.badge-row{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Make badges behave like buttons/links */
+a.badge{ 
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, filter .15s;
+}
+a.badge:hover{ transform: translateY(-1px) scale(1.02); }
+a.badge:active{ transform: translateY(0) scale(.98); }
+
+
+
+/* Limited = social (cyan) + video (violet) */
+.badge.limited{
+  background: linear-gradient(90deg, var(--cyan1), var(---));
+  color: #fff;
+}
+
+
+
+
+
+  footer{
+    max-width: var(--wrap-w);
+    margin: 40px auto 0; color: var(--muted); text-align:center; font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Mini Top Navbar (same tone & glass) -->
+<header class="mini-nav" role="banner">
+  <div class="mini-inner">
+    <a class="mini-brand" href="index.html" aria-label="ForSit Media Home">
+      <!-- Replace with your new black/white logo -->
+      <img src="images/short content videos/logo navbar 2.png" alt="ForSit Media" class="mini-logo">
+      <span class="mini-name">ForSit Media</span>
+    </a>
+
+    <nav class="mini-actions" aria-label="Quick actions">
+      <!-- Change link if your services hub lives elsewhere -->
+      <a class="mini-btn mini-ghost" href="video.html">← Back to our services</a>
+      <!-- Preselect Video Production on contact page -->
+      <a class="mini-btn mini-primary" href="contact.html?reason=video">Get in contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Page header -->
+<section class="head">
+  <h1>Some cool people we worked with</h1>
+  <p>Selected collaborations across video, social, web, and full packages.</p>
+</section>
+
+<!-- Collaboration cards -->
+<section class="collab-list">
+
+  <!-- CARD EXAMPLE -->
+  <article class="collab-card" data-reason="video">
+    <div class="left">
+      <div class="logo-box">
+        <!-- Swap with client logo (SVG/PNG) -->
+        <img src="images/collab/logo start global .png" alt="Start global">
+      </div>
+      <h3 class="company-name">Start Global</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge video">Video production</span> </div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">St. Gallen • Switzerland 🇨🇭</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          One full week of  creative content, behind the scenes, special activities, drone shots and interviews. 
+        </div>
+      </div>
+      <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   It was exciting to capture the energy of the event and the passion of the participants. We traveled all the way to Switzerland for one week in order to record the most engaging content of the program. We filmed the different activities, the workshops, the interviews with the participants and the mentors, and the final presentations. We used a variety of equipment, including drones, gimbals, and professional cameras, to ensure high-quality footage; also serving as actors in some of the activities. The result was a series of videos that showcased the innovation, creativity, and impact of Start Global, and helped to promote the program to a wider audience.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD1: Social -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/trium logo.png" alt="Restaurante Trium">
+      </div>
+      <h3 class="company-name">Restaurante Trium</h3>
+    </div>
+
+    <div class="right">
+        
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge web">Website creation</span></div>
+      </div>
+      
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Cascais Marina • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Build up of a new website from scratch: responsive design, booking form, SEO basics, new domain.
+        </div>
+      </div>
+      <!-- Our experience -->
+<div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   When we encountered the restaurant we immediatly notice that there was a problem with the old website and google indexing. In fact, the domain was expired and everytime a costumer would try to touch the link it would bring you somewhere else with no relation to the restaurant. This is why, we immediately fixed the problem and linked everything back to their old site. However, it was not updated and too complicated for a normal user, therefore still useless for the restaurant owners. Thus, they encouraged us to start building the new one. It was a pleasure to work with them and now they have a nice website that represents their brand and attract new costumers, intuitive and with many usefull functions.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD2: Social -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/fadus-logo-golden copy.png" alt="Fadus Events">
+      </div>
+      <h3 class="company-name">Fadus Events</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge social">Social media management</span> <span class="badge video">Video production</span> </div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Cascais • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+        Improved social media presence and performance, strategic content planning, and enhanced audience engagement.
+        </div>
+      </div>
+      <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   Fadus was an example of a client that had the best content ready but no idea on how to use it. The company creates amazing events all around the world and they had tons of footage and photos from them. However, they were not using it to promote their brand on social medias. Therefore, we started visioning all the old material and keeping the best content, modifying it a bit to make it more dynamic and appealing for the audience. Finally, it was time to create a content calendar and start posting regularly, engaging with the community and growing their audience. It was a pleasure to work with them, also for one video production in an event at Cascais Marina. 
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD3: Social -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/pizza prestige.png" alt="Sea Breeze Café">
+      </div>
+      <h3 class="company-name">Pizzeria Prestige</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge social">Social media management</span> <span class="badge video">Video production</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Rome • Italy 🇮🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+         Increasing quality of social media presence, creative content creation and building a strong community. 
+        </div>
+      </div>
+        <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   This Pizzeria is where all started. Our first client, which gives us the trust to build up our agency. Through many creative ideas and video productions we become part of their team, inside and outside the kitchen. The results achived were so strong that made us and our new clients believe we can have an impact on this market.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD4: Social Following Sky -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/Following Sky brandFS_logo@300x (3) (1) copy.png" alt="Sea Breeze Café">
+      </div>
+      <h3 class="company-name">Following Sky</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge full">Full package</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Lisbon • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Website creation, monthly social media management, video production and photography.
+        </div>
+      </div>
+            <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   Real Estate is a very competitive market, therefore it was important to create a strong brand identity and a consistent social media presence. Sharon is an exceptional business owner and she deserves a digitalization that reflects her values and professionalism. We are really proud to have her on board for this amazing journey. The important thing is to keep authenticity and start in the right direction to build momentum and push the brand forward. In our first weeks we got to know each other and managed to find a rhythm that works for both of us. During our production she is the actor and we are the directors, we work as a team to create the best content possible. the website will contain everything we recorded together and it will be a great tool to showcase her services and attract new clients.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD5: Social -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/conscious and health summit.png" alt="Conscious Health Summit">
+      </div>
+      <h3 class="company-name">Conscious Health Summit 2025</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"> <span class="badge video">Video production</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip"> Lisbon • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Short content videos, wellness products promotions, events and special activities.
+        </div>
+      </div>
+       <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   It was a real pleasure to be part of this event as "press". The Conscious Health Summit is unique as it desplays a wide range of wellness practices and products, all in one place. From yoga and meditation to nutrition and holistic healing, the summit offers something for everyone interested in improving their health and well-being. Every different brand and its story was recorded in a short video that describes the essence and benefits of the product in the least amount of time. It was a challenge but also a great opportunity to improve our skills and learn new techniques.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CAR6 DUne: Social -->
+  <article class="collab-card" data-reason="social">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/le dune logo.png" alt="Le Dune">
+      </div>
+      <h3 class="company-name">Le Dune - Beach Club</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge social">Social media management</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Lido di Ostia • Italy 🇮🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Single video production, professional drone shots and camera videos for social medias.
+        </div>
+      </div>
+      <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   Le Dune beach club specifically asked us for 3 different videos to promote their brand on social medias. The first one, the more complicated, was a 1 minute video that included drone shots, camera shots and a lot of different angles. The second and third one was a bit shorter and more about the food and drinks. Even though it was a one day production, we managed to create a strong relationship with the owner and the staff, which made the job easier and more fun.
+  </div>
+</div>
+    </div>
+  </article>
+
+
+  <!-- CARD Mich : Web -->
+  <article class="collab-card" data-reason="web">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/mich piras logo.png" alt="Mich Piras">
+      </div>
+      <h3 class="company-name">Mich Piras - Indipendent Artist</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge video">Video production</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Lido di Osia • Italy 🇮🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Dj set video production, drone shots and 360 degrees camera shots.
+        </div>
+      </div>
+          <div class="row">
+  <div class="label">Our experience</div>
+  <div class="value">
+   Michele is a new artist that is trying to make his way in the music industry. He described to us his vision of a 40 minutes DJ set on the beach at sunset time. There were many challenges realated to this work such as electricity which we produced with a generator, the light which was not enough as the sun was going down and the timing to set everything up correctly and record. However, we managed to create a strong video that represents his style and his music. We are really proud of the final result and we are sure that this video will help him to reach his goals.
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- CARD: Full package -->
+  <article class="collab-card" data-reason="full">
+    <div class="left">
+      <div class="logo-box">
+        <img src="images/collab/marisca logo.png" alt="Stride Fit">
+      </div>
+      <h3 class="company-name">Marisca Petisca </h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge video">Video production</span> <span class="badge social">Social media management</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Praia de Carcavelos • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+            Video production for social medias, creative content creation and building a strong community.
+        </div>
+      </div>
+       <div class="row">
+  <div class="label">Our experience</div>Marisca was the first portuguese restaurant we worked with. We created a strong relationship with the owner and the staff, which made the job easier and more fun. The previous photos and videos on their profile were not appealing at all and missing the true authenticity of the place. By using our creativity and the collaboration with the stuff we managed to build a strong engagment with the community and increase their overall numbers with some crazy results. Glad to be part of their journey.
+  <div class="value">
+
+  </div>
+</div>
+    </div>
+  </article>
+
+  <!-- Duplicate and customize more cards as needed… -->
+  <!-- CARD EXAMPLE -->
+  <article class="collab-card" data-reason="video">
+    <div class="left">
+      <div class="logo-box">
+        <!-- Swap with client logo (SVG/PNG) -->
+        <img src="images/collab/la plage 2.png" alt="Lisbon Hotel">
+      </div>
+      <h3 class="company-name">La Plage Restaurant</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge video">Video production</span> </div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip">Praia de Carcavelos • Portugal 🇵🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          Drone shots and camera shots for one video.
+        </div>
+      </div>
+        <div class="row">
+  <div class="label">Our experience</div>The owner of La Plage wanted to create a video that represented the totality of the restaurant. Easy, fast and on demand, that's what we did. In one day everything was edited and ready to be posted. 
+  <div class="value">
+
+  </div>
+</div>
+    </div>
+  </article>
+
+ <!-- CARD EXAMPLE -->
+  <article class="collab-card" data-reason="video">
+    <div class="left">
+      <div class="logo-box">
+        <!-- Swap with client logo (SVG/PNG) -->
+        <img src="images/collab/curcuma_e_basilico_black_on_transparent.png" alt="Lisbon Hotel">
+      </div>
+      <h3 class="company-name">Curcuma e Basilico Bar</h3>
+    </div>
+
+    <div class="right">
+      <div class="row">
+        <div class="label">Reason for contact</div>
+        <div class="value"><span class="badge video">Video production</span> <span class="badge social">Social media management</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Location</div>
+        <div class="value"><span class="chip"> Rome • Italy 🇮🇹</span></div>
+      </div>
+      <div class="row">
+        <div class="label">Type of work</div>
+        <div class="value">
+          6× short-form reels (9:16), 1× 45s brand film, drone lobby reveal, room tour edits.
+        </div>
+      </div>
+       <div class="row">
+  <div class="label">Our experience</div>Curcuma e Basilico is a new bar in Rome that needed us in a moment of change. They had lost a great partner that was managing traffic on their social medias and they needed someone to take care of it. We immediately started creating content and posting it on their profile. The results were really good and Pinder, the owner, was really happy about it. We managed to create a strong relationship for many months and everytime Curcuma and Basicilico needs us we are here for them.
+  <div class="value">
+
+  </div>
+</div>
+    </div>
+  </article>
+
+
+</section>
+
+
+<!-- Quick contact CTA -->
+<section class="contact-quick">
+  <h2 class="contact-title">Choose your favourite option and get in contact with us</h2>
+
+  <div class="badge-row">
+    <a class="badge video"  href="contact.html?reason=video"   aria-label="Contact us about Video production">Video production</a>
+    <a class="badge social" href="contact.html?reason=social"  aria-label="Contact us about Social media management">Social media management</a>
+    <a class="badge web"    href="contact.html?reason=website" aria-label="Contact us about Website creation">Website creation</a>
+    <a class="badge limited"
+   href="contact.html?reason=limited"
+   aria-label="Contact us about the Limited package (social + video)">
+  Limited package (social + video production)
+</a>
+    <a class="badge full"   href="contact.html?reason=full"    aria-label="Contact us about Full package">Full package</a>
+  </div>
+</section>
+
+
+<footer>
+  © <span id="year"></span> ForSit Media — All rights reserved.
+</footer>
+
+<script>
+  // just the year for the footer
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
