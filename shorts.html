@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Take a look at our short media content</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+ <link rel="icon" href="images/short content videos/logo navbar.png" type="image/svg+xml">
+
+<style>
+  :root{
+    /* Tweak these to tune size/feel */
+    --wrap-w: 1100px;
+    --card-w: 360px;         /* width of the center vertical card on desktop */
+    --gap: 26px;             /* space between cards (visual) */
+    --tilt: 22deg;           /* Y rotation for side cards */
+    --offset: calc(var(--card-w) * 0.72); /* horizontal push for side cards */
+    --bg: #0b0c10;
+    --ink: #fff;
+    --muted: #a9a9b6;
+    --glass: rgba(255,255,255,.06);
+    --accent: #c9c6ff;       /* subtle violet highlight */
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; }
+  body{
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 20% -10%, #14151c 0%, #0b0c10 48%, #0b0c10 100%);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding: 40px 16px 80px;
+  }
+
+
+/* ---- Mini Top Navbar (glass) ---- */
+.mini-nav{
+  position:fixed; top:0; left:0; right:0; height:64px; z-index:10000;
+  background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+  border-bottom:1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+.mini-inner{
+  max-width:1100px; height:64px; margin:0 auto; padding:0 16px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.mini-brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff; font-weight:800; letter-spacing:.2px; }
+.mini-logo{ height:34px; width:auto; display:block; }
+.mini-name{ opacity:.9; font-size:15px; }
+
+.mini-actions{ display:flex; align-items:center; gap:10px; }
+.mini-btn{
+  display:inline-grid; place-items:center; height:40px; padding:0 14px; border-radius:999px;
+  text-decoration:none; font-weight:800; font-size:14px; letter-spacing:.2px; transition:transform .15s, box-shadow .15s, background .15s;
+}
+.mini-primary{
+  color:#111; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.85);
+}
+.mini-ghost{
+  color:#fff; background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 10px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);
+}
+.mini-btn:hover{ transform:translateY(-1px); }
+.mini-btn:active{ transform:translateY(0) scale(.98); }
+
+/* Push page content below the fixed bar (adjust if you already have top padding) */
+body{ padding-top: calc(64px + 24px); }
+
+/* Mobile: stack/condense */
+@media (max-width:640px){
+  .mini-name{ display:none; }
+  .mini-actions .mini-btn{ padding:0 12px; font-size:13px; height:38px; }
+  body{ padding-top: 72px; }
+}
+
+
+
+
+
+  /* ------- Section header ------- */
+  .section{
+    max-width: var(--wrap-w);
+    margin: 0 auto;
+  }
+  .section h1{
+    font-size: clamp(22px, 4.4vw, 42px);
+    line-height: 1.06;
+    margin: 4px 0 18px;
+    font-weight: 900;
+    letter-spacing: .3px;
+  }
+  .subtitle{
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+
+  /* ------- Carousel wrap: perspective for 3D ------- */
+  .carousel{
+    position: relative;
+    max-width: var(--wrap-w);
+    margin: 0 auto;
+    perspective: 1600px;                    /* enables 3D transforms */
+    perspective-origin: 50% 50%;
+  }
+
+  /* Track keeps cards stacked in 3D space */
+  .track{
+    position: relative;
+    height: calc(var(--card-w) * 16 / 9);   /* height follows 9:16 ratio of video below */
+    transform-style: preserve-3d;
+  }
+
+  /* ------- Card base ------- */
+  .card{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--card-w);
+    height: calc(var(--card-w) * 16 / 9);   /* 9:16 (vertical) => height = width * 16/9 */
+    transform: translate(-50%, -50%);
+    transform-style: preserve-3d;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 28px 80px rgba(0,0,0,.55);
+    background: #111;
+    transition: transform .55s cubic-bezier(.22,.61,.36,1), filter .45s, box-shadow .45s, opacity .35s;
+    will-change: transform, filter;
+  }
+
+  /* Subtle chrome around cards */
+  .card::after{
+    content:"";
+    position: absolute; inset:0;
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.35));
+    pointer-events: none;
+  }
+
+  /* Media area preserves vertical (9:16) video */
+  .media{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    background:#000;
+  }
+  .media video, .media iframe, .media img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display:block;
+    background:#000;
+  }
+  /* A tiny play hint for external thumbs (can remove) */
+  .play-badge{
+    position:absolute; bottom:10px; right:12px;
+    background:rgba(255,255,255,.9); color:#111; font-weight:800; font-size:12px;
+    padding:6px 10px; border-radius:999px;
+  }
+
+  /* ------- Positions (center / sides) ------- */
+  .center{
+    transform: translate(-50%, -50%) translateZ(120px) scale(1.02); /* lift towards viewer */
+    z-index: 3;
+  }
+  .left{
+    transform: translate(calc(-50% - var(--offset)), -50%) rotateY(var(--tilt)) scale(.88);
+    filter: saturate(.9) brightness(.85);
+    z-index: 2;
+  }
+  .right{
+    transform: translate(calc(-50% + var(--offset)), -50%) rotateY(calc(var(--tilt) * -1)) scale(.88);
+    filter: saturate(.9) brightness(.85);
+    z-index: 2;
+  }
+  .hidden{
+    opacity: 0; pointer-events:none;
+    transform: translate(-50%,-50%) translateZ(-300px) scale(.8);
+    z-index: 1;
+  }
+
+
+/* ===== Center-card controls (Apple-like liquid glass) ===== */
+.controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 10px;
+  z-index: 6;               /* above overlays */
+}
+
+.ctrl {
+  width: 46px; height: 46px; border-radius: 999px;
+  display: grid; place-items: center;
+  color: #fff;
+  cursor: pointer; user-select: none;
+  border: 1px solid rgba(255,255,255,.35);
+  background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.08));
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.40),
+    inset 0 1px 0 rgba(255,255,255,.55);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  transition: transform .18s, box-shadow .18s, background .18s;
+}
+.ctrl:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.6); }
+.ctrl:active { transform: translateY(0) scale(.96); }
+
+.ctrl svg { width: 20px; height: 20px; display:block; }
+
+
+
+  /* Hover lift on center for desktop */
+  @media (hover:hover){
+    .card.center:hover{ transform: translate(-50%, -50%) translateZ(150px) scale(1.03); }
+  }
+
+  /* ------- Arrows ------- */
+  .arrow{
+    position:absolute; top:50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.25);
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    display:grid; place-items:center;
+    color:#fff; cursor:pointer;
+    transition: transform .2s, box-shadow .2s, background .2s;
+    z-index: 5;
+    user-select:none;
+  }
+  .arrow:hover{ transform: translateY(-50%) scale(1.06); box-shadow: 0 10px 26px rgba(0,0,0,.35); }
+  .arrow:active{ transform: translateY(-50%) scale(.98); }
+  .arrow.left{ left: -8px; }
+  .arrow.right{ right: -8px; }
+  .arrow svg{ width:20px; height:20px }
+
+  /* ------- Dynamic details under carousel ------- */
+  .details{
+    max-width: var(--wrap-w);
+    margin: 18px auto 36px;
+    padding: 18px 18px 16px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .details h3{ margin:0 0 6px; font-size: 18px; letter-spacing:.2px }
+  .meta{ display:flex; flex-wrap:wrap; gap:14px; color: var(--muted); font-size: 14px }
+  .meta span{ background: rgba(222, 214, 214, 0.06); padding:6px 10px; border-radius:999px; border: 1px solid rgba(255,255,255,.1); }
+  .bullets{ margin: 12px 0 0 18px; }
+  .bullets li{ margin: 6px 0; color:#eaeaf1 }
+  .ext a{ color: var(--accent); text-underline-offset: 3px; }
+
+  /* ------- AI row ------- */
+  .ai-block{
+    max-width: var(--wrap-w);
+    margin: 40px auto 0;
+  }
+  .ai-block h2{ margin: 0 0 12px; font-size: clamp(18px, 2.8vw, 28px); }
+  .ai-row{
+    display:grid; gap:18px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ai-card{
+    position:relative; overflow:hidden; border-radius:14px;
+    background:#111; box-shadow: 0 24px 60px rgba(0,0,0,.35);
+  }
+  .ai-card video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .ai-cap{ position:absolute; left:12px; bottom:12px; background: rgba(0,0,0,.55); color:#fff; padding:6px 10px; border-radius:10px; font-size:12px; }
+
+  /* ------- Responsive tweaks ------- */
+  @media (max-width: 960px){
+    :root{ --card-w: 300px; --offset: calc(var(--card-w) * 0.74); }
+  }
+  @media (max-width: 720px){
+    :root{ --card-w: 72vw; --offset: 58vw; }
+    .arrow.left{ left: -2px; } .arrow.right{ right: -2px; }
+    .ai-row{ grid-template-columns: 1fr; }
+  }
+
+    footer{
+    max-width: var(--wrap-w);
+    margin: 40px auto 0; color: var(--muted); text-align:center; font-size:14px;
+  }
+
+</style>
+</head>
+<body>
+<!-- Mini Top Navbar -->
+<header class="mini-nav" role="banner">
+  <div class="mini-inner">
+    <a class="mini-brand" href="index.html" aria-label="Forsit Media Home">
+      <!-- replace with your black/white logo -->
+      <img src="images/short content videos/logo navbar 2.png" alt="Forsit Media" class="mini-logo">
+      <span class="mini-name">Forsit Media</span>
+    </a>
+
+    <nav class="mini-actions" aria-label="Quick actions">
+      <a class="mini-btn mini-ghost" href="video.html">← Back to our services</a>
+      <a class="mini-btn mini-primary" href="contact.html?reason=video">Get in contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="section">
+  <h1>Take a look at some of our short media content</h1>
+  <p class="subtitle">
+  <strong> Scroll down  </strong> for more <strong> "content details" </strong> </p>
+</section>
+
+<!-- ===== 3D CAROUSEL ===== -->
+<div class="carousel" aria-label="Short media carousel">
+  <button class="arrow left" aria-label="Previous">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+
+  <div class="track" id="track">
+
+    <!-- CARD 1 — LOCAL VIDEO -->
+    <article class="card center"
+      data-title="Italian Pizzeria - Suppli Recipe"
+      data-idea="behing-the-scenes, hands-on"
+      data-keywords="authentic • tutorial • food"
+      data-caption="Ecco il nostro SUPPLÌ ARTIGIANALE 🔥😋.. vieni a provarlo
+
+Consegna a domicilio 🚘🍕
+PER ORDINARE: 06 56032417 (apriamo alle 17:00)
+Piazza di santa Monica 41 (ristorante 🍽️)
+
+#pizza #pizzeriaprestige #ostia #roma #romana
+#food #pizzalover #ciboitaliano #pizzeria #pizzeriaostia #pizzamare
+"
+      data-location="Rome, Italy"
+      data-link="https://www.tiktok.com/@pizzeria.prestige/video/7385164223791271200"
+      data-linklabel="View Tiktok post">
+      <div class="media">
+        <!-- 9:16 local video -->
+        <video src="images/short content videos/suppli copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+        
+      </div>
+    </article>
+
+    <!-- CARD 2 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="High Class Event Promo"
+      data-idea="Luxury details, elegant motion"
+      data-keywords="High end • Dynamic • Luxury"
+      data-caption="Num entardecer dourado na Marina de Cascais, o @the.klub.portugal celebrou o solstício de verão com um sunset cocktail inesquecível. Arte, mar, emoção e beleza uniram-se na exposição Ocean Mysteries de @conceicaocabral.artandglass — um tributo à alma do oceano.#TheKlubExperience #LuxuryFineDining #RootsCatering #ChefJoãoDias #ImprimirComArte #FadusEvent #FadusExperiences #FadusProductions #EventInPortugal"
+      data-location="Cascais Marina, Portugal"
+       data-link="https://www.instagram.com/p/DLIZCgBP5Vv/"
+      data-linklabel="View Instagram post">
+      <div class="media">
+        <video src="images/short content videos/VIdeo Fadus Event copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+    <!-- CARD 3 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Construction Site"
+      data-idea="How it's made, construction process, puzzle view"
+      data-keywords="building • connect • showcase"
+      data-caption="Are you also already missing the hype of START Summit? 🥹
+
+Then, take a look at what it took to build such an event, and what it meant for our team and Network 🚀🔥
+
+#START25 #STARTGlobal #STARTSummit #entrepreneurship #startup"
+      data-location="Sant Gallen, Switzerland"
+         data-link="https://www.instagram.com/p/DIlXVDJy-0w/"
+      data-linklabel="View Instagram post">
+      <div class="media">
+        <video src="images/short content videos/construction video copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+     <!-- CARD 4 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Visit Azores - Teaser"
+      data-idea="Drone shots, landscapes, nature"
+      data-keywords="Azores • Portugal Paradise • Travel"
+      data-caption="‘Fresh. Local. Yours.’"
+      data-location="Azores, Portugal"
+         data-link="https://www.instagram.com/p/DBrTM_iIMBC/"
+      data-linklabel="View Instagram post">
+      <div class="media">
+        <video src="images/short content videos/Azores Edit Vertical copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+      <!-- CARD 5 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Real Estate - Curated Luxury Homes"
+      data-idea="Modern, Engaging, Complete"
+      data-keywords="Luxury • Apartments • Real Estate"
+      data-caption="Located in Lisbon’s vibrant center, this premium apartment redefines modern living. Designed for those who value both productivity and elegance, it offers a refined workspace, high-end finishes, and breathtaking views that turn every moment into an experience.
+      #Lisbon #LuxuryLiving #ModernDesign #CityViews #RealEstate"
+      data-location="Lisbon, Portugal">
+      <div class="media">
+        <video src="images/short content videos/Victor Cordon  copy.mp4" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+    <!-- CARD 6 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Restaurant Menu Teaser"
+      data-idea="Quality of ingredients, Service style"
+      data-keywords="food • authentic • tradition"
+      data-caption="In the heart of Lisbon, tradition meets refinement. Our chefs reimagine classic Portuguese flavors with contemporary elegance — from the first aroma to the last sip of wine. A dining experience where authenticity, craftsmanship, and atmosphere come together to celebrate Portugal’s culinary soul.
+      #Lisbon #PortugueseCuisine #GourmetExperience #CulinaryArt #FineDining"
+      data-location="Lisbon, Portugal"
+         data-link="https://www.instagram.com/p/DLIZCgBP5Vv/"
+      data-linklabel="View Instagram post">
+      <div class="media">
+        <video src="images/short content videos/Mar Ao Carmo copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+
+    <!-- CARD 7 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Fashion Brand - Teaser"
+      data-idea="New Opening, full product display"
+      data-keywords="Bags • Brand Identity • Fashion"
+      data-caption="Mais do que uma loja, uma experiência cheia de elegância e estilo ✨
+Na @marinacascais a moda brasileira tem um novo espaço.
+Estilo, elegância e beleza, aqui cada detalhe foi pensado para transformar a sua visita num motivo para um brinde especial 🥂
+Estamos à sua espera!
+
+#MarinaDeCascais #Cascais #ModaBrasileira #EstiloContemporâneo #LojaAberta #ÉrikaMorais #ShoppingEmCascais #TheGallery"
+      data-location="Marina de Cascais, Portugal"
+         data-link="https://www.instagram.com/p/DPHQRvNjQ-E/"
+      data-linklabel="View Instagram post">
+      <div class="media">
+        <video src="images/short content videos/thegallery2 copy.mp4" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+
+     <!-- CARD 8 — LOCAL VIDEO -->
+    <article class="card right"
+      data-title="Beach Club - Food and Vibes"
+      data-idea="Sea view, people vibes"
+      data-keywords="food • motion • short form"
+      data-caption="✨ O nosso cantinho visto do céu — o Marisca Petisca em todo o seu esplendor! Entre mar e sabores, descobre onde o verão ganha mais cor, sabor e boas vibrações. 🌅🍤🍷
+
+📍 Localização: Avenida Marginal, Praia de Carcavelos
+📞 Reservas: +351 214 571 502
+🍴 Restaurante Marisca Petisca
+
+#MariscaPetisca #PraiaDeCarcavelos
+✨ #RestaurantesCarcavelos #ComidaComVista #CarcavelosBeach #VerãoEmLisboa #ComerBem #FoodLovers #PôrDoSol #vibesdepraia
+"
+      data-location="Praia de Carcavelos, Portugal"
+         data-link="https://www.facebook.com/reel/679695914878820?locale=it_IT"
+      data-linklabel="View Facebook post">
+      <div class="media">
+        <video src="images/short content videos/vibe praia de carcavelos copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+
+    <!-- CARD 9 — LOCAL VIDEO -->
+    <article class="card left"
+      data-title="Wellness Products - Health Summit"
+      data-idea="Product close-ups, dynamic explenation, engaging"
+      data-keywords="wellness • benefits • scientific"
+      data-caption="Discover a curated selection of products designed to elevate your Wellness Summit journey in Lisbon — from mindful essentials to sensory delights that nurture balance, focus, and inner harmony throughout the event. 
+      #WellnessSummit #MindfulLiving #SelfCare #HolisticHealth #WellnessJourney"
+      data-location="Carcavelos">
+      <div class="media">
+        <video src="images/short content videos/amazing products copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+    <!-- CARD 10 — LOCAL VIDEO -->
+    <article class="card left"
+      data-title="Italian Bar - Aperol Spritz"
+      data-idea="Theme Drink, Innovative Edit"
+      data-keywords="Fresh • Cool • Summer"
+      data-caption="Aperol SPRITZ by @curcumaebasilico 💋🥊♥️
+
+Ricorda che ogni venerdì è venergin live
+Puoi chiedere un Gintonic/ Ginlemon, Vodkatonic/ Vodkalemon e saremo pronti a servirvi. AH, non scordarti del DJSET 🎵🎹🎤, buona musica e tanto CHILL insieme ai tuoi amici…
+
+Ci puoi trovare a Ostia, Piazza Giuliano della Rovere 5A 📍
+Noi siamo pronti e tu?!!! 🥂🍸✨
+
+#venergin #curcumaebasilico #venerlive #venerdi #ostia #ostialido #drinkostia #drinkostialido #venerdiostia #serataostia #festa #festaostia #drinkeconomico #drinks #bereaostia #aperitivoostia #curcumaebasilicobar #curcuma #basilico #barostia #djset #aperolspritz"
+      data-location="Lido di Ostia, Italy"
+         data-link="https://www.tiktok.com/@singhpinder0/video/7413428164166241568?lang=it-IT"
+      data-linklabel="View Tiktok post">
+      <div class="media">
+        <video src="images/short content videos/Aperol 2 tiktok  copy.mov" playsinline webkit-playsinline loop preload="metadata"></video>
+      </div>
+    </article>
+
+  </div>
+
+  <button class="arrow right" aria-label="Next">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</div>
+
+<!-- ===== DYNAMIC DETAILS (auto-updates to current card) ===== -->
+<section class="details" id="details">
+  <!-- filled by JS on load/change -->
+</section>
+
+<!-- ===== AI VIDEO PRODUCTIONS (bonus) ===== -->
+<section class="ai-block">
+  <h2>AI Video Productions</h2>
+  <p>Let's create content through Artificial Inteligence. With our innovative prompting it will be possible to craf videos that none else is expecting on your social platforms.</p>
+  <div class="ai-row">
+    <figure class="ai-card">
+      <video src="images/short content videos/ai video edited.mp4" autoplay muted loop playsinline></video>
+      <figcaption class="ai-cap">AI Product Teaser — “Brand's Cup”</figcaption>
+    </figure>
+    <figure class="ai-card">
+      <video src="images/short content videos/AI video 2 finish.mp4" autoplay muted loop playsinline></video>
+      <figcaption class="ai-cap">AI model — “Free Fallin”</figcaption>
+    </figure>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> ForSit Media — All rights reserved.
+</footer>
+
+<script>
+(function(){
+  const track   = document.getElementById('track');
+  const details = document.getElementById('details');
+  const cards   = Array.from(track.querySelectorAll('.card'));
+  const btnPrev = document.querySelector('.arrow.left');
+  const btnNext = document.querySelector('.arrow.right');
+
+  let index = cards.findIndex(c => c.classList.contains('center'));
+  if (index < 0) index = 0;
+
+  /* ===== Sound preference (remembered) ===== */
+ // NEW (always start muted)
+let soundOn = false;
+localStorage.setItem('shortmedia_sound', 'off'); // keep it muted on first load
+
+  /* ===== Unlock audio after first gesture (policy requirement) ===== */
+  ['click','touchstart'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      soundOn = true;
+      localStorage.setItem('shortmedia_sound','on');
+      unmuteCenterNow();
+    }, { once:true, passive:true });
+  });
+
+  /* ===== Icons (inline SVG) ===== */
+  const ico = {
+    volOn:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M11 5l-5 4H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/>
+               <path d="M18 6a8 8 0 010 12"/>
+             </svg>`,
+    volOff: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M11 5l-5 4H3v6h3l5 4V5z"/><path d="M19 5L5 19"/>
+             </svg>`,
+    play:   `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`,
+    pause:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>`
+  };
+
+  function setDetails(card){
+    const t   = card.dataset.title || 'Untitled';
+    const idea= card.dataset.idea;
+    const kw  = card.dataset.keywords;
+    const cap = card.dataset.caption;
+    const loc = card.dataset.location;
+    const link= card.dataset.link;
+    const lbl = card.dataset.linklabel || 'Open link';
+    details.innerHTML = `
+      <h3>${t}</h3>
+      <div class="meta">
+        ${kw ? `<span>Keywords: ${kw}</span>` : ``}
+        ${loc? `<span>Location: ${loc}</span>` : ``}
+      </div>
+      <ul class="bullets">
+        ${idea ? `<li><strong>Idea:</strong> ${idea}</li>` : ``}
+        ${cap  ? `<li><strong>Caption:</strong> ${cap}</li>` : ``}
+      </ul>
+      ${link ? `<p class="ext" style="margin-top:10px">🔗 <a href="${link}" target="_blank" rel="noopener">${lbl}</a></p>` : ``}
+    `;
+  }
+
+  /* ===== Make the center card audible immediately after gesture ===== */
+  function unmuteCenterNow(){
+    const c = cards[index];
+    const media = c.querySelector('.media');
+
+    const v = media?.querySelector('video');
+    if (v){
+      v.muted = false; v.removeAttribute('muted'); v.volume = 1;
+      const p = v.play(); if (p) p.catch(()=>{});
+      updateControls(c);
+      return;
+    }
+    const yt = c.dataset.youtube;
+    if (yt){
+      const f = media.querySelector('iframe');
+      if (f) ytCmd(f, 'unMute');
+      updateControls(c);
+    }
+  }
+
+  /* ===== Ensure only the center plays (and respect soundOn) ===== */
+  function ensureActiveMedia(card, isActive){
+    const media = card.querySelector('.media');
+    const ytembed = card.dataset.youtube;
+    const external = card.dataset.external;
+    const v = media.querySelector('video');
+
+    // Local video
+    if (v && !ytembed && !external){
+      if (isActive){
+        v.muted = !soundOn;
+        if (!v.muted) v.removeAttribute('muted');
+        v.volume = soundOn ? 1 : 0;
+        const p = v.play(); if (p) p.catch(()=>{});
+      } else {
+        v.muted = true; try{ v.pause(); }catch(_){}
+      }
+      return;
+    }
+
+    // YouTube: iframe when center (enable js api), thumbnail otherwise
+    if (ytembed){
+      if (isActive){
+        let src = ytembed;
+        const muteVal = soundOn ? 0 : 1;
+        // add/replace params
+        if (/([?&])mute=\d/.test(src)) src = src.replace(/([?&])mute=\d/, `$1mute=${muteVal}`);
+        else src += (src.includes('?') ? '&' : '?') + `mute=${muteVal}`;
+        if (!/autoplay=1/.test(src))    src += '&autoplay=1';
+        if (!/playsinline=1/.test(src)) src += '&playsinline=1';
+        if (!/enablejsapi=1/.test(src)) src += '&enablejsapi=1';
+        if (!/origin=/.test(src))       src += `&origin=${encodeURIComponent(location.origin)}`;
+
+        media.innerHTML = `<iframe
+          src="${src}"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          style="width:100%;height:100%;border:0;display:block;background:#000"></iframe>`;
+      } else {
+        const thumb = card.dataset.thumb || '';
+        media.innerHTML = `<img src="${thumb}" alt="Preview"><span class="play-badge">Play</span>`;
+      }
+    }
+  }
+
+  /* ===== YouTube postMessage helper ===== */
+  function ytCmd(iframe, func){
+    try{
+      iframe.contentWindow?.postMessage(JSON.stringify({
+        event:'command', func, args:[]
+      }), '*');
+    }catch(_){}
+  }
+
+  /* ===== Controls: attach to current center card ===== */
+  function updateControls(card){
+    // Remove any existing controls
+    track.querySelectorAll('.controls').forEach(el => el.remove());
+
+    // Detect playable media in the center card
+    const media = card.querySelector('.media');
+    const v = media.querySelector('video');
+    const f = media.querySelector('iframe');
+    if (!v && !f) return; // external thumb only → no controls
+
+    const wrap = document.createElement('div');
+    wrap.className = 'controls';
+
+    // Speaker
+    const btnSound = document.createElement('button');
+    btnSound.className = 'ctrl';
+    const isMuted = v ? v.muted : false;   // for iframe we trust global soundOn
+    btnSound.innerHTML = (!isMuted && soundOn) ? ico.volOn : ico.volOff;
+
+    btnSound.addEventListener('click', () => {
+      if (v){
+        v.muted = !v.muted;
+        soundOn = !v.muted;
+        localStorage.setItem('shortmedia_sound', soundOn ? 'on' : 'off');
+        btnSound.innerHTML = v.muted ? ico.volOff : ico.volOn;
+        if (!v.paused){ const p=v.play(); if (p) p.catch(()=>{}); }
+      } else if (f){
+        soundOn = !soundOn;
+        localStorage.setItem('shortmedia_sound', soundOn ? 'on' : 'off');
+        ytCmd(f, soundOn ? 'unMute' : 'mute');
+        btnSound.innerHTML = soundOn ? ico.volOn : ico.volOff;
+      }
+    });
+
+    // Play / Pause
+    const btnPlay = document.createElement('button');
+    btnPlay.className = 'ctrl';
+    const isPaused = v ? v.paused : false;
+    btnPlay.innerHTML = isPaused ? ico.play : ico.pause;
+
+    btnPlay.addEventListener('click', () => {
+      if (v){
+        if (v.paused){ v.play(); btnPlay.innerHTML = ico.pause; }
+        else { v.pause(); btnPlay.innerHTML = ico.play; }
+      } else if (f){
+        // Toggle play/pause blindly (YT API doesn't return state without full API)
+        if (btnPlay.dataset.state !== 'playing'){
+          ytCmd(f, 'playVideo'); btnPlay.dataset.state='playing'; btnPlay.innerHTML = ico.pause;
+        }else{
+          ytCmd(f, 'pauseVideo'); btnPlay.dataset.state='paused'; btnPlay.innerHTML = ico.play;
+        }
+      }
+    });
+
+    wrap.append(btnSound, btnPlay);
+    card.appendChild(wrap);
+    // Tap/click anywhere on the center video to toggle play/pause
+const mediaEl = card.querySelector('.media');
+if (mediaEl) {
+  mediaEl.style.cursor = 'pointer';       // shows it's tappable
+  mediaEl.onclick = (e) => {
+    // If you ever position controls inside .media, ignore those clicks
+    if (e.target.closest('.controls')) return;
+
+    const v = mediaEl.querySelector('video');
+    const f = mediaEl.querySelector('iframe'); // YouTube
+
+    // LOCAL VIDEO
+    if (v) {
+      if (v.paused) {
+        v.play();
+        btnPlay.innerHTML = ico.pause;     // keep the button in sync
+      } else {
+        v.pause();
+        btnPlay.innerHTML = ico.play;
+      }
+      return;
+    }
+
+    // YOUTUBE IFRAME (toggle via postMessage; no overlay needed)
+    if (f) {
+      if (btnPlay.dataset.state !== 'playing') {
+        ytCmd(f, 'playVideo');
+        btnPlay.dataset.state = 'playing';
+        btnPlay.innerHTML = ico.pause;
+      } else {
+        ytCmd(f, 'pauseVideo');
+        btnPlay.dataset.state = 'paused';
+        btnPlay.innerHTML = ico.play;
+      }
+    }
+  };
+}
+
+  }
+
+  /* ===== Lay out cards & apply media state ===== */
+  function update(){
+    cards.forEach((c,i)=>{
+      c.classList.remove('left','right','center','hidden');
+      if (i === index) c.classList.add('center');
+      else if (i === (index - 1 + cards.length) % cards.length) c.classList.add('left');
+      else if (i === (index + 1) % cards.length) c.classList.add('right');
+      else c.classList.add('hidden');
+      ensureActiveMedia(c, i === index);
+    });
+    setDetails(cards[index]);
+    updateControls(cards[index]);
+  }
+
+  function next(){ index = (index + 1) % cards.length; update(); if (soundOn) unmuteCenterNow(); }
+  function prev(){ index = (index - 1 + cards.length) % cards.length; update(); if (soundOn) unmuteCenterNow(); }
+
+  // Click side cards
+  cards.forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if (c.classList.contains('left'))  prev();
+      else if (c.classList.contains('right')) next();
+    });
+  });
+
+  // Arrows + keys + swipe
+  btnPrev.addEventListener('click', prev);
+  btnNext.addEventListener('click', next);
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+  });
+  let x0=null;
+  track.addEventListener('touchstart', e=>{ x0 = e.touches[0].clientX; }, {passive:true});
+  track.addEventListener('touchend', e=>{
+    if (x0===null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) (dx<0 ? next() : prev());
+    x0=null;
+  });
+
+  update(); // initial render
+})();
+</script>
+
+
+
+  <!-- Footer year auto-update -->
+<script>
+(function () {
+  var y = new Date().getFullYear();
+  // fill any #year or .js-year you might add
+  document.querySelectorAll('#year, .js-year').forEach(function (el) {
+    el.textContent = y;
+  });
+})();
+</script>
+
+</body>
+</html>

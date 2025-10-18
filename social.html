@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multiplatform Posting — ForSit Media</title>
+  <meta name="description" content="Instagram, TikTok, Facebook — one content engine, three distribution strengths.">
+  <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    html{scroll-behavior:smooth;}
+    :root{
+      --brand:#4B0082;
+      --accent:#6E56CF;
+      --ink:#1f1f1f;
+      --muted:#6b7280;
+      --card:#f9f9fb;
+      --maxw:1200px;
+      --radius:24px;
+      --shadow:0 12px 36px rgba(0,0,0,.10);
+    }
+
+    /* Push content below the fixed nav */
+    body{ padding-top:64px; margin:0; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",sans-serif; background:#fff; color:var(--ink); }
+
+    /* ====== NAVBAR (same style as your site) ====== */
+    .navbar{
+      position:fixed; top:0; left:0; right:0; height:64px;
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid #eee;
+      z-index:1000;
+    }
+    .nav-inner{ max-width:var(--maxw); margin:0 auto; height:64px; padding:0 20px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-left{ display:flex; align-items:center; gap:12px; }
+    .nav-logo{ height:36px; width:auto; display:block; }
+    .nav-brand{ font-weight:800; color:var(--brand); text-decoration:none; }
+
+    .nav-links{ display:flex; align-items:center; gap:20px; }
+    .nav-links a{ text-decoration:none; color:var(--ink); font-weight:600; opacity:0.9; }
+    .nav-links a:hover{ opacity:1; }
+    .nav-links .cta{
+      padding:10px 14px; border-radius:999px;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+      color:#fff; box-shadow:0 10px 22px rgba(110,86,207,.25);
+    }
+    /* Active state for normal links only */
+    .nav-links a.active:not(.cta),
+    .mobile-drawer a.active:not(.cta){
+      color:var(--accent); font-weight:700; border-bottom:2px solid var(--accent); padding-bottom:2px;
+    }
+
+    .hamburger{ display:none; place-items:center; width:44px; height:44px; border:none; background:transparent; cursor:pointer; }
+    .hamburger svg{ width:24px; height:24px; }
+
+    .scrim{ position:fixed; inset:0; background:rgba(0,0,0,.35);
+      opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:1100; }
+    .scrim.show{ opacity:1; pointer-events:auto; }
+
+    .mobile-drawer{
+      position:fixed; top:0; right:0; height:100vh; width:82%; max-width:340px;
+      background:#fff; box-shadow:-20px 0 50px rgba(0,0,0,.15);
+      transform:translateX(100%); transition:transform .25s ease; z-index:1200;
+      padding:18px 20px; display:flex; flex-direction:column; gap:8px;
+    }
+    .mobile-drawer.open{ transform:translateX(0); }
+    .mobile-drawer .close{ align-self:flex-end; width:42px; height:42px; border:none; background:transparent; cursor:pointer; }
+    .mobile-drawer a{
+      text-decoration:none; color:var(--ink); font-size:18px; font-weight:600;
+      padding:12px 2px; border-bottom:1px solid #eee;
+    }
+    .mobile-drawer .cta{
+      margin-top:10px; border:none; border-radius:999px; text-align:center; padding:12px 14px; color:#fff;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+    }
+    @media (max-width:900px){ .nav-links{display:none;} .hamburger{display:grid;} }
+
+    /* ====== MULTIPLATFORM HERO ====== */
+
+/* Instagram card */
+.mp-item.ig {
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  color: #fff; /* makes text white for contrast */
+}
+
+/* TikTok card */
+.mp-item.tt {
+  background: linear-gradient(135deg, #25F4EE, #FE2C55);
+  color: #fff;
+}
+
+/* Facebook card */
+.mp-item.fb {
+  background: linear-gradient(135deg, #1877F2, #3b5998);
+  color: #fff;
+}
+
+/* Ensure inner text is visible on dark bg */
+.mp-item.ig h3,
+.mp-item.tt h3,
+.mp-item.fb h3,
+.mp-item.ig p,
+.mp-item.tt p,
+.mp-item.fb p,
+.mp-item.ig .tip,
+.mp-item.tt .tip,
+.mp-item.fb .tip {
+  color: #fff;
+}
+
+
+
+    .mp-hero{ padding:80px 20px 30px; }
+    .mp-wrap{ max-width:var(--maxw); margin:0 auto; }
+    .mp-head{ text-align:center; max-width:900px; margin:0 auto 40px; }
+    .eyebrow{
+      display:inline-block; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:700;
+      color:var(--accent); background:rgba(110,86,207,.10); padding:6px 10px; border-radius:999px;
+    }
+    .mp-head h1{
+      font-size: clamp(36px, 5vw, 64px);
+      line-height:1.05; letter-spacing:-.02em; margin:16px 0 14px; font-weight:800; color:#111;
+    }
+    .mp-head .thin{ font-weight:300; }
+    .mp-head .lead{ font-size: clamp(16px,2.1vw,20px); color:#444; margin:0 auto; max-width:760px; }
+
+    .mp-grid{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:44px;
+    }
+    @media (max-width:980px){ .mp-grid{ grid-template-columns:1fr; } }
+
+    .mp-item{
+      background:#fff; border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:30px 26px; display:flex; flex-direction:column; align-items:flex-start; gap:14px;
+      transition:transform .25s ease, box-shadow .25s ease;
+    }
+    .mp-item:hover{ transform:translateY(-6px); box-shadow:0 18px 50px rgba(0,0,0,.14); }
+
+    /* Base 3D card style */
+.logo-3d {
+  width:110px;
+  height:110px;
+  border-radius:26px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.15);
+  margin-bottom:6px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.logo-3d:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.2);
+}
+
+.logo-3d img {
+  width:76px;
+  height:76px;
+  object-fit:contain;
+}
+
+/* Platform-specific backgrounds */
+.logo-3d.ig {
+  background: #ffffff;
+}
+
+.logo-3d.tt {
+  background: 
+#ffffff;
+}
+
+.logo-3d.fb {
+  background: #ffffff;
+}
+
+    .logo-3d img{ width:100px; height:px; object-fit:contain; display:block; }
+    .mp-item h3{ font-size:22px; margin:4px 0 6px; }
+    .mp-item p{ color:#444; font-size:15.5px; line-height:1.6; margin:0; }
+
+    .tip{
+      display:inline-block; font-size:12px; color:#555; background:#000052; border:1px solid #e6e6ff3e; padding:6px 10px; border-radius:10px;
+      margin-top:6px;
+    }
+
+    /* CTA band */
+    .mp-cta{ text-align:center; margin:54px auto 10px; }
+    .primary-btn{
+      display:inline-block; margin-top:8px; padding:14px 28px; border-radius:12px; color:#fff; font-weight:700; text-decoration:none;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF); box-shadow:0 8px 26px rgba(110,86,207,.35);
+      transition:transform .2s ease;
+    }
+    .primary-btn:hover{ transform:translateY(-2px); }
+
+
+
+    /* ===== STRATEGY PILLARS SECTION ===== */
+
+
+    
+.pillars {
+  padding: 100px 20px;
+  background: #faf9ff;
+}
+.pillars-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 60px;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .pillars-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pillars-text h2 {
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.pillars-text p {
+  font-size: 17px;
+  color: #444;
+  line-height: 1.7;
+}
+
+.pillars-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: relative;
+}
+
+.pillar-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 26px 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+}
+
+.pillar-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.pillar-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.pillar-card p {
+  font-size: 15.5px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Decorative arrows */
+.arrow.next::after {
+  content: "➜";
+  position: absolute;
+  right: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  color: var(--accent);
+  opacity: 0.4;
+}
+@media (max-width: 900px) {
+  .arrow.next::after {
+    display: none;
+  }
+}
+
+/* ===== RESULTS & GROWTH — 3 CONNECTED DOTS ===== */
+.results{
+  padding:100px 20px 120px;
+  background:#fff;
+}
+.results-wrap{ max-width:var(--maxw); margin:0 auto; }
+.results-head{ text-align:center; max-width:860px; margin:0 auto 64px; }
+.results-head h2{
+  font-size:clamp(32px,4.2vw,56px);
+  font-weight:800; line-height:1.12; color:var(--ink); margin:0 0 14px;
+}
+.results-head p{ font-size:17px; color:#444; line-height:1.7; margin:0; }
+
+/* Grid puts: step | connector | step | connector | step */
+.flow-grid{
+  display:grid;
+  grid-template-columns: 1fr 220px 1fr 220px 1fr;
+  align-items:center;
+  justify-items:center;
+  gap:0;
+  position:relative;
+}
+
+/* Steps */
+.flow-step{
+  text-align:center;
+  max-width:320px;
+}
+.flow-step h3{
+  margin:12px 0 6px;
+  font-size:20px; font-weight:800; color:var(--accent);
+}
+.flow-step p{ margin:0 0 10px; color:#333; font-size:15.5px; }
+
+/* Big visible dot */
+.dot{
+  width:88px; height:88px; border-radius:50%;
+  position: right;
+  display:grid; place-items:center;
+  font-size:34px; color:#fff;
+  background:linear-gradient(135deg,#2d2b34,#6E56CF);
+  box-shadow:0 16px 40px rgba(104, 100, 120, 0.35);
+  border:5px solid #fff;   /* ensures visibility on light bg */
+}
+
+.flow-step{
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* center text */
+}
+.flow-step .dot{
+  align-self: flex;    /* <<< moves the ball right */
+  margin-right: -6px;
+}
+
+
+/* KPI badges */
+.badges{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:8px; }
+.badge{
+  font-size:12.5px; line-height:1;
+  padding:7px 10px; border-radius:999px;
+  background:rgba(110,86,207,.10);
+  border:1px solid rgba(110,86,207,.25);
+  color:#3b2f7a;
+}
+
+/* Curved connectors */
+.connector{ width:1px; height:10px; opacity:.6; }
+.connector svg{ width:100%; height:100%; overflow:visible; }
+.connector path{
+  stroke:var(--accent); stroke-width:2; fill:none; stroke-linecap:round;
+}
+
+/* Scroll-in (reuses your observer script) */
+.fade-in{ opacity:0; transform:translateY(36px);
+  transition:opacity .7s ease, transform .7s ease; }
+.fade-in.visible{ opacity:1; transform:translateY(0); }
+
+/* Responsive: stack vertically and rotate connectors */
+@media (max-width: 980px){
+  .flow-grid{
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+  }
+  .connector{
+    transform:rotate(90deg);
+    width:110px; height:140px;
+  }
+}
+
+/* Hot-fix: make steps visible by default */
+.fade-in { 
+  opacity: 1 !important; 
+  transform: none !important; 
+}
+
+/* ===== FINAL CTA SPLIT ===== */
+.cta-split { padding: 90px 20px 120px; background:#fff; }
+.cta-split-wrap{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 44px;
+  align-items: stretch;
+}
+
+.cta-card.dark{
+  background: radial-gradient(1200px 600px at 10% 0%, #1b1633 0, #0f0d1a 60%);
+  color:#fff;
+  border-radius: 28px;
+  padding: 56px 42px;
+  box-shadow: 0 22px 60px rgba(0,0,0,.28);
+}
+.cta-card.dark h2{
+  font-size: clamp(28px, 4.2vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 16px;
+  color:#fff;
+}
+.cta-card.dark p{
+  color: #e7e5f7;
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 620px;
+  margin: 0 0 28px;
+}
+/* bigger CTA button */
+.primary-btn.lg{ padding: 16px 28px; font-size: 16px; border-radius: 14px; }
+
+/* Right side */
+.cta-side{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+.cta-side h3{
+  font-size: clamp(22px, 3.2vw, 36px);
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.25;
+  margin: 10px 0 22px;
+}
+.service-pill{
+  display:block;
+  width: min(520px, 100%);
+  text-decoration:none;
+  border: 2px solid var(--accent);
+  padding: 16px 18px;
+  border-radius: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  background:#fff;
+  box-shadow: 0 10px 28px rgba(110,86,207,0.08);
+  margin: 10px 0;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.service-pill:hover{
+  transform: translateY(-2px);
+  background: rgba(110,86,207,.06);
+  box-shadow: 0 16px 36px rgba(110,86,207,.18);
+}
+
+.hint{
+  margin: 12px 0 16px;
+  color:#6b6f86;
+  font-size: 14.5px;
+}
+
+.see-all{
+  display:inline-block;
+  padding: 14px 22px;
+  border-radius: 14px;
+  text-decoration:none;
+  font-weight: 800;
+  color:#fff;
+  background: linear-gradient(90deg,#f0b3ff,#9E8CFC,#6E56CF);
+  box-shadow: 0 12px 28px rgba(110,86,207,.35);
+  transition: transform .2s ease;
+}
+.see-all:hover{ transform: translateY(-2px); }
+
+/* Responsive */
+@media (max-width: 980px){
+  .cta-split-wrap{ grid-template-columns: 1fr; gap: 26px; }
+  .cta-side{ align-items:center; }
+}
+
+
+
+/* ===== Services dropdown (desktop) ===== */
+.has-submenu{ position:relative; display:inline-block; }
+.nav-dropbtn{
+  display:flex; align-items:center; gap:6px;
+  background:transparent; border:none; cursor:pointer;
+  font-weight:600; color:var(--ink); padding:8px 0; opacity:.9; text-decoration:none;
+  font-size: 16px;
+}
+.nav-dropbtn .caret{ transition: transform .2s ease; }
+.dropdown{
+  position:absolute; top:calc(100% + 14px); left:0;
+  min-width:260px; background:#fff; border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:10px; display:flex; flex-direction:column; gap:4px;
+  opacity:0; visibility:hidden; transform: translateY(-4px);
+  transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  z-index: 1200;
+}
+.dropdown a{
+  display:block; text-decoration:none; color:var(--ink);
+  padding:10px 12px; border-radius:10px; font-weight:600;
+}
+.dropdown a:hover{ background: rgba(110,86,207,.08); }
+
+
+/* Open states */
+.dropdown.open{ opacity:1; visibility:visible; transform: translateY(0); }
+.nav-dropbtn[aria-expanded="true"] .caret{ transform: rotate(180deg); }
+
+/* Hover open on pointer devices */
+@media (hover:hover){
+  .has-submenu:hover .dropdown{ opacity:1; visibility:visible; transform: translateY(0); }
+}
+
+/* ===== Drawer submenu (mobile) ===== */
+.drawer-dropbtn{
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; background:transparent; border:none; cursor:pointer;
+  padding:12px 2px; font-size:18px; font-weight:600; color:var(--ink); 
+  opacity:.9; text-decoration:none;
+  border-bottom:1px solid #eee;
+}
+
+
+.drawer-dropbtn .caret{ transition: transform .2s ease; }
+.drawer-dropbtn[aria-expanded="true"] .caret{ transform: rotate(180deg); }
+
+.drawer-submenu{ display:none; padding:6px 0 10px 10px; }
+.drawer-submenu.open{ display:block; }
+.drawer-submenu a{
+  display:block; padding:5px 2px 10px 8px; border-bottom:1px solid #eee;
+  color:var(--ink); text-decoration:none; font-weight:300;
+}
+
+
+
+
+
+
+    /* Footer */
+    footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR (unchanged) ===== -->
+  <header class="navbar" role="banner">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand" aria-label="ForSit Media Home">
+          <img src="images/logo.svg" alt="" class="nav-logo">
+        </a>
+        <a href="index.html" class="nav-brand">ForSit Media</a>
+      </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About Us</a>
+         <div class="has-submenu">
+    <button id="servicesBtn" class="nav-dropbtn" aria-haspopup="true"
+            aria-expanded="false" aria-controls="servicesMenu">
+      Our Services
+      <svg class="caret" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+    <div id="servicesMenu" class="dropdown" role="menu">
+      <a id="srv-web"   href="website.html">Website creation</a>
+      <a id="srv-video" href="video.html">Video & photo production</a>
+      <a id="srv-social" href="social.html">Social media management</a>
+    </div>
+  </div>
+        <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button id="burger" class="hamburger" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Off-canvas mobile menu -->
+  <div id="scrim" class="scrim" hidden></div>
+  <aside id="drawer" class="mobile-drawer" aria-label="Mobile Navigation" aria-hidden="true">
+    <button id="closeDrawer" class="close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 6l12 12M6 18L18 6"/>
+      </svg>
+    </button>
+    <a href="index.html">Home</a>
+    <a href="aboutus.html">About Us</a>
+     <!-- Services collapsible (mobile) -->
+  <button id="mServicesBtn" class="drawer-dropbtn" aria-expanded="false" aria-controls="mServicesMenu">
+    Our Services
+    <svg class="caret" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </button>
+  <div id="mServicesMenu" class="drawer-submenu">
+    <a id="m-srv-web"   href="website.html">Website creation</a>
+    <a id="m-srv-video" href="video.html">Video & photo production</a>
+    <a id="m-srv-social" href="social.html">Social media management</a>
+  </div>
+
+    <a href="contact.html">Contact</a>
+    <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+  </aside>
+
+  <!-- ===== MULTIPLATFORM SECTION ===== -->
+  <main class="mp-hero">
+    <div class="mp-wrap">
+      <header class="mp-head">
+        <p class="eyebrow">Multiplatform Posting</p>
+        <h1>Be everywhere that matters.<br><span class="thin">Without lifting a finger.</span></h1>
+        <p class="lead">We create and publish for you across Instagram, TikTok, and Facebook — each used for what it does best.</p>
+      </header>
+
+      <section class="mp-grid" aria-label="Platforms">
+        <!-- Instagram -->
+        <article class="mp-item ig" aria-labelledby="ig-title">
+          <figure class="logo-3d ig" aria-hidden="true">
+            <img src="images/socialmedia images/insta1.png" alt="Instagram logo" loading="lazy">
+          </figure>
+          <h3 id="ig-title">Instagram: your main asset</h3>
+          <p>We curate a profile that impresses both consumers and potential partners: clean grid, strong highlights, and content that proves your value at a glance.</p>
+          <span class="tip">Goal: trust & brand perception</span>
+        </article>
+
+        <!-- TikTok -->
+        <article class="mp-item tt" aria-labelledby="tt-title">
+          <figure class="logo-3d tt" aria-hidden="true">
+            <img src="images/socialmedia images/tiktok2.png" alt="TikTok logo" loading="lazy">
+          </figure>
+          <h3 id="tt-title">TikTok: virality engine</h3>
+          <p>Followers don’t matter — quality does. Short, native videos optimized for watch-time to reach thousands (or millions) beyond your audience.</p>
+          <span class="tip">Goal: reach & discovery</span>
+        </article>
+
+        <!-- Facebook -->
+        <article class="mp-item fb" aria-labelledby="fb-title">
+          <figure class="logo-3d fb" aria-hidden="true">
+            <img src="images/socialmedia images/facebook2.png" alt="Facebook logo" loading="lazy">
+          </figure>
+          <h3 id="fb-title">Facebook: buyer power</h3>
+          <p>Tap into an audience with higher purchasing power and local intent. Great for offers, events, and community groups that convert.</p>
+          <span class="tip">Goal: conversions & local demand</span>
+        </article>
+      </section>
+
+      <div class="mp-cta">
+        <p style="color:#555; margin:0;">We post on every platform so you benefit from them all.</p>
+        <a href="index.html#free-trial-form" class="primary-btn">Start your FREE trial</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== STRATEGY PILLARS SECTION ===== -->
+<section class="pillars" id="strategy-pillars">
+  <div class="pillars-wrap">
+    <div class="pillars-text">
+      <h2>We plan ahead — so your brand stays consistent all week.</h2>
+      <p>
+        Every post is programmed in advance, based on <strong>three key pillars</strong>
+        that shape your weekly performance. Strategy meets timing — so your content
+        reaches the right people, at the right time.
+      </p>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">⏰</div>
+        <h3>Timing</h3>
+        <p>
+          We publish when your audience is most active:
+          <em>right after lunch for students, before dinner (18:00–19:00) for families,
+          and during weekend peaks</em>. The goal: appear when people are already scrolling.
+        </p>
+        <span class="arrow next"></span>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">#️⃣</div>
+        <h3>Hashtags</h3>
+        <p>
+          Hashtags are keywords that help people discover you. We select the ones
+          your audience actually searches — so when someone types
+          <strong>“Restaurant Lisbon”</strong>, your video appears first, polished and on-brand.
+        </p>
+        <span class="arrow next"></span>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">💬</div>
+        <h3>Engagement</h3>
+        <p>
+          We reply to comments, tag the right partners,
+          and encourage interactions that boost your visibility. The more you engage,
+          the stronger your algorithmic reach — no paid ads, just genuine community.
+        </p>
+         <span class="arrow next"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESULTS & GROWTH — 3 CONNECTED DOTS ===== -->
+<section class="results" id="results">
+  <div class="results-wrap">
+    <header class="results-head">
+      <h2>Analyze, adapt, and grow — month after month.</h2>
+      <p>
+        Every month we track what matters — <strong>new followers, impressions, profile visits,</strong>
+        and <strong>views from followers vs. non-followers</strong> — then turn those insights into a focused
+        growth plan for the next month.
+      </p>
+    </header>
+
+    <!-- Flow: dot — line — dot — line — dot -->
+    <div class="flow-grid">
+      <!-- STEP 1 -->
+      <div class="flow-step fade-in">
+        <div class="dot" aria-hidden="true">📊</div>
+        <h3>Track</h3>
+        <p>Collect monthly KPIs across platforms.</p>
+        <div class="badges">
+          <span class="badge">New followers</span>
+          <span class="badge">Impressions</span>
+          <span class="badge">Profile visits</span>
+          <span class="badge">Views: followers / non-followers</span>
+        </div>
+      </div>
+
+      <!-- CONNECTOR -->
+      <div class="connector" aria-hidden="true">
+        <svg viewBox="0 0 220 90" preserveAspectRatio="none">
+          <path d="M0,45 C70,90 150,0 220,45" />
+        </svg>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="flow-step fade-in">
+        <div class="dot" aria-hidden="true">🔎</div>
+        <h3>Analyze</h3>
+        <p>See what worked (timing, format, topic) and what didn’t.</p>
+        <div class="badges">
+          <span class="badge">Best posts</span>
+          <span class="badge">Timing impact</span>
+          <span class="badge">Format performance</span>
+          <span class="badge">Audience reach</span>
+        </div>
+      </div>
+
+      <!-- CONNECTOR -->
+      <div class="connector" aria-hidden="true">
+        <svg viewBox="0 0 220 90" preserveAspectRatio="none">
+          <path d="M0,45 C70,90 150,0 220,45" />
+        </svg>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="flow-step fade-in">
+        <div class="dot" aria-hidden="true">🚀</div>
+        <h3>Grow</h3>
+        <p>Double down on winning content and iterate the weakest.</p>
+        <div class="badges">
+          <span class="badge">Next-month plan</span>
+          <span class="badge">Content tweaks</span>
+          <span class="badge">Organic growth</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FINAL CTA SPLIT ===== -->
+<section class="cta-split" id="cta-social">
+  <div class="cta-split-wrap">
+    <!-- LEFT CARD: Social Media CTA -->
+    <article class="cta-card dark">
+      <h2>Ready to get your time back?</h2>
+      <p>
+        Tired of managing your social media every day? We plan, create, and publish for you —
+        so you stay consistent while you focus on the business.
+      </p>
+      <a class="primary-btn lg" href="index.html#free-trial-form">Get in Contact</a>
+    </article>
+
+    <!-- RIGHT: Other services -->
+    <aside class="cta-side">
+      <h3>You might be interested in<br>our other services</h3>
+
+      <!-- Change the hrefs to your real anchors/pages -->
+      <a class="service-pill" href="
+      website.html">🖥️ Website design & development</a>
+      <a class="service-pill" href="video.html">🎬 Video production & photography</a>
+
+      <p class="hint">💡 Remember, you can get the full package.</p>
+      <a class="see-all" href="index.html#services">See All Services</a>
+    </aside>
+  </div>
+</section>
+
+
+
+  <footer>© <span id="year"></span> ForSit Media — Lisbon. All rights reserved.</footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile drawer
+    const burger = document.getElementById('burger');
+    const drawer = document.getElementById('drawer');
+    const scrim = document.getElementById('scrim');
+    const closeBtn = document.getElementById('closeDrawer');
+
+    function openDrawer(){
+      drawer.classList.add('open'); scrim.classList.add('show'); scrim.hidden=false;
+      burger.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden';
+    }
+    function closeDrawer(){
+      drawer.classList.remove('open'); scrim.classList.remove('show'); scrim.hidden=true;
+      burger.setAttribute('aria-expanded','false'); document.body.style.overflow='';
+    }
+    burger.addEventListener('click',()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    scrim.addEventListener('click', closeDrawer);
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+  </script>
+
+
+<script>
+
+
+
+  // Desktop dropdown
+  const servicesBtn  = document.getElementById('servicesBtn');
+  const servicesMenu = document.getElementById('servicesMenu');
+
+  if (servicesBtn && servicesMenu) {
+    servicesBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = servicesMenu.classList.toggle('open');
+      servicesBtn.setAttribute('aria-expanded', open);
+    });
+
+    // Click outside to close
+    document.addEventListener('click', (e) => {
+      if (!servicesMenu.contains(e.target) && !servicesBtn.contains(e.target)) {
+        servicesMenu.classList.remove('open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Escape closes
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        servicesMenu.classList.remove('open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Mobile drawer submenu
+  const mServicesBtn  = document.getElementById('mServicesBtn');
+  const mServicesMenu = document.getElementById('mServicesMenu');
+
+  if (mServicesBtn && mServicesMenu) {
+    mServicesBtn.addEventListener('click', () => {
+      const open = mServicesMenu.classList.toggle('open');
+      mServicesBtn.setAttribute('aria-expanded', open);
+    });
+
+    // Close drawer when a submenu link is tapped
+    mServicesMenu.querySelectorAll('a').forEach(a =>
+      a.addEventListener('click', () => { try { closeDrawer(); } catch(_){} })
+    );
+  }
+
+  // Mark active service based on URL
+  const url = location.href;
+  if (url.includes('social')) {
+    document.getElementById('srv-social')?.classList.add('active');
+    document.getElementById('m-srv-social')?.classList.add('active');
+  } else if (url.includes('#web-design') || url.includes('web')) {
+    document.getElementById('srv-web')?.classList.add('active');
+    document.getElementById('m-srv-web')?.classList.add('active');
+  } else if (url.includes('#video') || url.includes('video')) {
+    document.getElementById('srv-video')?.classList.add('active');
+    document.getElementById('m-srv-video')?.classList.add('active');
+  }
+</script>
+
+
+
+</body>
+</html>
+ 
