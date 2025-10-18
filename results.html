@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Results — ForSit Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --wrap-w: 1100px;
+    --ink:#fff; --muted:#a9a9b6; --border:rgba(255,255,255,.18);
+    --glass1:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
+    --left-col: 260px;         /* width of the phone preview column */
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--ink);
+    background:radial-gradient(1200px 800px at 20% -10%, #14151c 0%, #0b0c10 48%, #0b0c10 100%);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    padding: calc(64px + 24px) 16px 80px;
+  }
+
+  /* Mini liquid-glass navbar */
+  .mini-nav{position:fixed;inset:0 0 auto 0;height:64px;z-index:1000;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(12px) saturate(140%); -webkit-backdrop-filter:blur(12px) saturate(140%);
+  }
+  .mini-inner{max-width:var(--wrap-w);height:64px;margin:0 auto;padding:0 16px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .mini-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:900;}
+  .mini-logo{height:34px;width:auto;display:block;}
+  .mini-name{opacity:.9;font-size:15px;}
+  .mini-actions{display:flex;gap:10px;}
+  .mini-btn{display:inline-grid;place-items:center;height:40px;padding:0 14px;border-radius:999px;
+    text-decoration:none;font-weight:800;font-size:14px;letter-spacing:.2px;transition:transform .15s,box-shadow .15s,background .15s;}
+  .mini-primary{color:#111;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.75));
+    border:1px solid rgba(255,255,255,.6); box-shadow:0 10px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.85);}
+  .mini-ghost{color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.35); box-shadow:0 10px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.45);}
+  .mini-btn:hover{transform:translateY(-1px)} .mini-btn:active{transform:translateY(0) scale(.98)}
+  @media (max-width:640px){ .mini-name{display:none} .mini-actions .mini-btn{height:38px;padding:0 12px;font-size:13px} }
+
+  /* Header */
+  .head{text-align:center;max-width:var(--wrap-w);margin:0 auto 24px;}
+  .head h1{margin:0;font-size:clamp(24px,4.6vw,44px);font-weight:900;}
+  .head p{margin:8px 0 0;color:var(--muted);}
+
+  /* Result cards */
+  .result-card{
+    max-width:var(--wrap-w); margin:0 auto 26px;
+    display:grid; grid-template-columns: var(--left-col) 1fr; gap:24px;
+    padding:16px 80px; border-radius:16px; position:relative; overflow:hidden;
+    background:linear-gradient(180deg,var(--glass1),var(--glass2));
+    border:1px solid var(--border);
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+
+  /* Left: phone-like vertical preview */
+  .media{ align-self:center; max-width:var(--left-col); width:100%; }
+  .phone{
+    width:100%; aspect-ratio:9/16;
+    border-radius:12px; overflow:hidden; background:#000;
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+    position:relative;
+  }
+  .phone img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; opacity:0; transition:opacity .35s ease;
+    display:block;
+  }
+  .phone img.active{ opacity:1; }
+
+  /* Right: stats panel */
+  .panel{ display:flex; flex-direction:column; gap:10px; justify-content:center; }
+  .panel h2{ margin:0; font-size:20px; font-weight:800; }
+  .note{ color:#e9e9f4; font-size:16px; opacity:.95; }
+  .desc{ color:#cfd0f7; font-size:18px; line-height:1.5; }
+  .metrics{
+    display:grid; grid-template-columns:repeat(2, minmax(140px,1fr)); gap:10px;
+  }
+  .metric{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+    padding:10px 12px; border-radius:12px; text-align:center;
+  }
+  .metric span{ display:block; font-weight:900; font-size:20px; color:#fff; }
+  .metric label{ display:block; font-size:12px; color:var(--muted); }
+
+  /* Arrows (use gutters created by card padding) */
+  .nav{ position:absolute; top:50%; transform:translateY(-50%); z-index:2;
+    width:46px; height:46px; border-radius:999px; cursor:pointer;
+    color:#fff; display:grid; place-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+    box-shadow:0 12px 28px rgba(0,0,0,.40), inset 0 1px 0 rgba(255,255,255,.55);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .nav:hover{ transform:translateY(-50%) scale(1.05); }
+  .nav svg{ width:20px; height:20px; }
+  .prev{ left:16px; }
+  .next{ right:16px; }
+
+  @media (max-width:900px){
+    :root{ --left-col: 72vw; }
+    .result-card{ grid-template-columns:1fr; padding:16px; gap:16px; }
+    .prev{ left:8px; } .next{ right:8px; }
+  }
+
+  /* General analytics */
+  .general{
+    max-width:var(--wrap-w); margin:40px auto 0; padding:20px;
+    border-radius:16px; text-align:center;
+    background:linear-gradient(180deg,var(--glass1),var(--glass2));
+    border:1px solid var(--border); box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+  .general h2{ margin:0 0 10px; font-size:clamp(18px,2.8vw,28px); font-weight:900; }
+  .gen-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-top:10px; }
+  .gen-metric{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); padding:12px; border-radius:12px; }
+  .gen-metric span{ display:block; font-weight:900; font-size:22px; }
+  .gen-metric label{ font-size:12px; color:var(--muted); }
+
+
+/* ===== Fadus FEATURE (isolated) ===== */
+.results-feature{
+  --maxw: 1400px;                 /* make it BIG – tweak if you want */
+  --glass1: rgba(255,255,255,.10);
+  --glass2: rgba(255,255,255,.06);
+  --border: rgba(255,255,255,.18);
+
+  max-width: min(var(--maxw), 98vw);
+  margin: 36px auto;              /* centers the whole block */
+}
+
+.results-feature .card{
+  padding: 14px 14px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--glass1), var(--glass2));
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 60px rgba(0,0,0,.40);
+}
+
+/* Big horizontal stage */
+.results-feature .stage{
+  width: 100%;
+  aspect-ratio: 16 / 9;          /* horizontal; change to 21/9 if you prefer wider */
+  border-radius: 14px;
+  background: #000;
+  overflow: hidden;
+
+  /* hard-center the media and let it grow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make the image as large as possible and centered (no crop) */
+.results-feature .stage img{
+  width: 100%;
+  height: 90%;
+  object-fit:scale-down;            /* switch to 'cover' if you want edge-to-edge crop */
+  display: block;
+}
+
+/* Caption */
+.results-feature figcaption{
+  text-align: center;
+  margin-top: 16px;
+}
+.results-feature .title{
+  margin: 0;
+  font-weight: 900;
+  font-size: 25px;
+}
+.results-feature .subtitle{
+  margin: 6px 0 0;
+  font-size: 18px;
+  opacity: .95;
+}
+
+/* Mobile polish */
+@media (max-width: 720px){
+  .results-feature .card{ padding: 10px 10px 14px; }
+  .results-feature .stage{ border-radius: 12px; }
+}
+
+
+  footer{
+    max-width: var(--wrap-w);
+    margin: 40px auto 0; color: var(--muted); text-align:center; font-size:14px;
+  }
+
+</style>
+</head>
+<body>
+
+<header class="mini-nav" role="banner">
+  <div class="mini-inner">
+    <a class="mini-brand" href="index.html" aria-label="ForSit Media Home">
+      <img class="mini-logo" src="images/short content videos/logo navbar 2.png" alt="ForSit Media">
+      <span class="mini-name">ForSit Media</span>
+    </a>
+    <nav class="mini-actions">
+      <a class="mini-btn mini-ghost" href="index.html#services">← Back to our services</a>
+      <a class="mini-btn mini-primary" href="contact.html?reason=full">Get in contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="head">
+  <h1>Results - all Organic (NOT PAID)</h1>
+  <p>Selected videos that delivered outstanding engagement.</p>
+</section>
+
+<!-- ========== CARD 1: Pizzeria Prestige ========== -->
+<article class="result-card" data-cardnote="TikTok videos">
+  <div class="media">
+    <div class="phone">
+      <!-- slides -->
+      <img class="active" src="images/results images/IMG_5980.PNG"
+           alt="Pizzeria Prestige — 1"
+           data-views="2.5M" data-likes="70.1K" data-shares="1512" data-comments="475"
+           data-note="Creative Challenge — TikTok"
+           data-desc="One of our first viral hits — over a million views from a single idea. We created a fun food challenge that spread across Italy, bringing people straight to the restaurant. Authenticity turned into real results — this video alone is worth years of investment. (P.S. It also reached 1.5M views on Facebook!)"/>
+      <img loading="lazy" src="images/results images/IMG_5982.PNG"
+           alt="Pizzeria Prestige — 2"
+           data-views="337K" data-likes="7.7K" data-shares="2390" data-comments="186"
+           data-note="Pizza no stop — TikTok"
+           data-desc="The restaurant believed in its all-you-can-eat pizza, but few knew about it — until this video. It brought in new, younger customers, boosted table bookings, and got shared thousands of times. A simple concept turned into massive visibility."/>
+      <img loading="lazy" src="images/results images/IMG_5984.PNG"
+           alt="Pizzeria Prestige — 3"
+           data-views="648K" data-likes="22K" data-shares="975" data-comments="151"
+           data-note="Hand-stretch dough — Shorts"
+           data-desc="Another viral challenge, another success. This one made the pizzeria’s owner, Simone, a local star — people even asked for photos! Thousands of eyes on the brand, all thanks to content that feels real and engaging."/>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Pizzeria Prestige</h2>
+    <div class="note" data-note>TikTok videos • (M = millions, K = thousands)</div>
+    <p class="desc" data-desc>—</p>
+    <div class="metrics">
+      <div class="metric"><span data-key="views">—</span><label>Views</label></div>
+      <div class="metric"><span data-key="likes">—</span><label>Likes</label></div>
+      <div class="metric"><span data-key="shares">—</span><label>Shares</label></div>
+      <div class="metric"><span data-key="comments">—</span><label>Comments</label></div>
+    </div>
+  </div>
+  <button class="nav prev" aria-label="Previous">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="nav next" aria-label="Next">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</article>
+
+<!-- ========== CARD 2: Lisbon Hotel ========== -->
+<article class="result-card" data-cardnote="Reels campaign">
+  <div class="media">
+    <div class="phone">
+      <img class="active" src="images/results images/marisca 1.PNG"
+           alt="Lisbon Hotel — 1"
+           data-views="89K" data-likes="798" data-shares="103" data-comments="15"
+           data-note="Instagram  Reel"
+           data-desc="This video shows how a simple idea can boost visibility for your brand. We took an ordinary sandwich by the beach and turned it into a social phenomenon. Thousands of eyes, opinions, and interactions later — we grew. (P.S. The TikTok version performed even better, hitting 4K likes and 132K views!)"/>
+      <img loading="lazy" src="images/results images/marisca 2.PNG"
+           alt="Lisbon Hotel — 2"
+           data-views="61K" data-likes="2187" data-shares="247" data-comments="11"
+           data-note="Tiktok video"
+           data-desc="We showcased the simple pleasure of eating by the beach in the most authentic way — and thousands of people loved it. High-quality products, a stunning view, and a real sensation. The result? Incredible engagement for a brand-new profile we had just created."/>
+            <img loading="lazy" src="images/results images/marisca 3.PNG"
+           alt="Lisbon Hotel — 2"
+           data-views="52K" data-likes="1612" data-shares="748" data-comments="37"
+           data-note="Tiktok video"
+           data-desc="This video stood out because so many people saved it and wanted to see the place with their own eyes. It sparked curiosity and real-world visits — with tons of shares, likes, and comments. (It also performed great on Facebook and Instagram!)"/>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Marisca Petisca</h2>
+    <div class="note" data-note>Reels campaign</div>
+    <p class="desc" data-desc>—</p>
+    <div class="metrics">
+      <div class="metric"><span data-key="views">—</span><label>Views</label></div>
+      <div class="metric"><span data-key="likes">—</span><label>Likes</label></div>
+      <div class="metric"><span data-key="shares">—</span><label>Saved</label></div>
+      <div class="metric"><span data-key="comments">—</span><label>Comments</label></div>
+    </div>
+  </div>
+  <button class="nav prev" aria-label="Previous">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="nav next" aria-label="Next">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</article>
+
+<!-- ===== Fadus Events – Big Horizontal Feature ===== -->
+<section class="results-feature" aria-label="Fadus Events">
+  <figure class="card">
+    <div class="stage">
+      <!-- replace with your horizontal screenshot -->
+      <img src="images/results images/fadus summer .png"
+           alt="Fadus Events — account overview" />
+    </div>
+    <figcaption>
+      <h3 class="title">Fadus Events:</h3>
+      <p class="subtitle">Summer Instagram Strategy: higher reach, views and interaction with content.</p>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ===== General analytics (not client-specific) ===== -->
+<section class="general">
+  <h2>Overall Performance</h2>
+  <p style="max-width:70ch;margin:0 auto;color:#ececf5;">
+    Beyond single videos, we track the compound impact across profiles: discovery, repeat visits,
+    and deeper engagement.
+  </p>
+  <div class="gen-grid">
+    <div class="gen-metric"><span>5/6M</span><label>Profile visits</label></div>
+    <div class="gen-metric"><span>+3000%</span><label>Content reach</label></div>
+    <div class="gen-metric"><span>+1600%</span><label>Engagement rate</label></div>
+    <div class="gen-metric"><span>+65%</span><label>Follower growth</label></div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:40px 0;color:#777;font-size:14px;">
+  © <span id="year"></span> ForSit Media — Lisbon. All rights reserved.
+</footer>
+
+<script>
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const burger=document.getElementById('burger');
+  const drawer=document.getElementById('drawer');
+  const scrim=document.getElementById('scrim');
+  const closeBtn=document.getElementById('closeDrawer');
+  function openDrawer(){drawer.classList.add('open');scrim.classList.add('show');scrim.hidden=false;}
+  function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('show');scrim.hidden=true;}
+  burger.addEventListener('click',()=>drawer.classList.contains('open')?closeDrawer():openDrawer());
+  closeBtn.addEventListener('click',closeDrawer);
+  scrim.addEventListener('click',closeDrawer);
+</script>
+
+<script>
+
+
+
+
+/* Cards: prev/next + per-slide stats, note, and description */
+document.querySelectorAll('.result-card').forEach(card=>{
+  const imgs   = Array.from(card.querySelectorAll('.phone img'));
+  const prev   = card.querySelector('.prev');
+  const next   = card.querySelector('.next');
+
+  // target elements
+  const noteEl = card.querySelector('.panel [data-note]');
+  const descEl = card.querySelector('.panel [data-desc]');
+  const defaultNote = (noteEl?.textContent || card.getAttribute('data-cardnote') || '').trim();
+
+  const fields = {
+    views:    card.querySelector('[data-key="views"]'),
+    likes:    card.querySelector('[data-key="likes"]'),
+    shares:   card.querySelector('[data-key="shares"]'),
+    comments: card.querySelector('[data-key="comments"]')
+  };
+
+  let i = imgs.findIndex(img => img.classList.contains('active'));
+  if (i < 0) i = 0;
+
+  function apply(index){
+    imgs.forEach((img,idx)=> img.classList.toggle('active', idx === index));
+    const img = imgs[index];
+    if (!img) return;
+
+    // metrics
+    fields.views.textContent    = img.getAttribute('data-views')    || '—';
+    fields.likes.textContent    = img.getAttribute('data-likes')    || '—';
+    fields.shares.textContent   = img.getAttribute('data-shares')   || '—';
+    fields.comments.textContent = img.getAttribute('data-comments') || '—';
+
+    // note under H2 (per-slide or card default)
+    if (noteEl) noteEl.textContent = (img.getAttribute('data-note') || defaultNote || '').trim();
+
+    // long description (per-slide)
+    if (descEl) descEl.textContent = (img.getAttribute('data-desc') || '').trim();
+  }
+
+  function go(delta){ i = (i + delta + imgs.length) % imgs.length; apply(i); }
+
+  next?.addEventListener('click', ()=> go(1));
+  prev?.addEventListener('click', ()=> go(-1));
+  card.querySelector('.phone')?.addEventListener('click', ()=> go(1)); // tap to advance
+
+  apply(i); // sync on load
+});
+</script>
+
+</body>
+</html>
