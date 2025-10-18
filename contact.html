@@ -3,45 +3,495 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact — ForSit Media</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Contact — ForSit Media | Social Media & Web Design in Lisbon</title>
+  <meta name="description" content="Get in touch with ForSit Media in Lisbon. Contact us for website design, video production, social media management, or full package solutions." />
+  <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      font-family: Inter, sans-serif;
-      color: #4B0082;
-      text-align: center;
+   :root{
+      --ink:#0b0b0b;
+      --brand:#4B0082;
+      --accent:#6E56CF;
+      --muted:#666;
+      --bg:#ffffff;
+      --card:#f7f7fb;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.06);
+      --maxw:1200px;
     }
-    h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
+
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue", sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.6;
+      padding-top:64px; /* push below fixed nav */
     }
-    a {
-      font-size: 20px;
-      color: #6E56CF;
-      text-decoration: none;
-      font-weight: 600;
+
+    /* NAVBAR (desktop already fine) */
+    .navbar{
+      position:fixed; top:0; left:0; right:0; height:64px;
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid #eee;
+      z-index:1000;
     }
-    a:hover {
-      text-decoration: underline;
+    .nav-inner{
+      max-width:var(--maxw); margin:0 auto; height:64px; padding:0 20px;
+      display:flex; align-items:center; justify-content:space-between;
     }
+    .nav-left{ display:flex; align-items:center; gap:12px; }
+    .nav-logo{ height:36px; width:auto; display:block; }
+    .nav-brand{ font-weight:800; color:var(--brand); text-decoration:none; }
+
+    .nav-links{ display:flex; align-items:center; gap:20px; }
+    .nav-links a{
+      text-decoration:none; color:var(--ink); font-weight:600; opacity:.9;
+    }
+    .nav-links a:hover{ opacity:1; }
+    .nav-links .cta{
+      padding:6.9px 14px; border-radius:999px;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+      color:#fff; box-shadow:0 10px 22px rgba(110,86,207,.25);
+    }
+    /* Active underline */
+    .nav-links a.active:not(.cta),
+    .mobile-drawer a.active:not(.cta){
+      color:var(--accent);
+      font-weight:700;
+      border-bottom:2px solid var(--accent);
+      padding-bottom:2px;
+    }
+
+    /* Hamburger (hidden on desktop) */
+    .hamburger{
+      display:none; place-items:center;
+      width:44px; height:44px; border:none; background:transparent; cursor:pointer;
+      color:var(--ink);                      /* ✅ force visible color */
+      -webkit-tap-highlight-color:transparent; /* ✅ kill iOS glow */
+    }
+    .hamburger svg{ width:24px; height:24px; }
+    .hamburger svg path{                     /* ✅ force stroke on iOS */
+      stroke:currentColor; stroke-width:2; fill:none;
+    }
+
+    /* Mobile drawer */
+    .scrim{
+      position:fixed; inset:0; background:rgba(0,0,0,.35);
+      opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:1100;
+    }
+    .scrim.show{ opacity:1; pointer-events:auto; }
+
+    .mobile-drawer{
+      position:fixed; top:0; right:0; height:100vh; width:82%; max-width:340px;
+      background:#fff; box-shadow:-20px 0 50px rgba(0,0,0,.15);
+      transform:translateX(100%); transition:transform .25s ease; z-index:1200;
+      padding:18px 20px; display:flex; flex-direction:column; gap:8px;
+    }
+    .mobile-drawer.open{ transform:translateX(0); }
+    .mobile-drawer .close{
+      align-self:flex-end; width:42px; height:42px; border:none; background:transparent; cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .mobile-drawer a{
+      text-decoration:none; color:var(--ink); font-size:18px; font-weight:600;
+      padding:12px 2px; border-bottom:1px solid #eee;
+    }
+    .mobile-drawer .cta{
+      margin-top:10px; border:none; border-radius:999px; text-align:center;
+      padding:12px 14px; color:#fff;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+    }
+
+    /* Breakpoint */
+    @media (max-width: 900px){
+      .nav-links{ display:none; }
+      .hamburger{ display:grid; }
+    }
+
+    /* CONTACT PAGE */
+    .contact-wrapper { max-width: var(--maxw); margin: auto; padding: 60px 20px; }
+    .contact-grid { display:grid; grid-template-columns:2fr 1fr; gap:40px; }
+    @media (max-width:900px){ .contact-grid{ grid-template-columns:1fr; } }
+
+    .contact-card, .info-card{
+      background:#fff; padding:40px; border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+    .contact-card h1, .info-card h2{ margin-bottom:20px; color:var(--ink); font-size:60px; }
+
+    .map-photo{ position:relative; border-radius:14px; overflow:hidden; margin-top:12px; box-shadow:var(--shadow);}
+    .map-photo img{ width:100%; height:300px; object-fit:cover; display:block; }
+    .map-photo .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); color:#fff; font-weight:700; font-size:16px; opacity:0; transition:opacity .3s ease; }
+    .map-photo:hover .overlay{ opacity:1; }
+
+    .form-group{ margin-bottom:18px; }
+    .form-group label{ display:block; font-weight:600; margin-bottom:6px; font-size:15px; color:var(--ink); }
+    .form-group input, .form-group select, .form-group textarea{
+      width:100%; padding:12px; border-radius:12px; border:1px solid #ccc;
+      font-size:15px; font-family:inherit;
+    }
+    textarea{ resize:vertical; min-height:120px; }
+
+    /* ✅ Scope the form button so it doesn't style the hamburger */
+    .primary-btn{
+      width:100%; padding:16px; border:none; border-radius:999px;
+      background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+      color:#fff; font-weight:700; font-size:17px; cursor:pointer;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .primary-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 24px rgba(110,86,207,.4);
+    }
+
+    .info-card p{ margin:10px 0; font-size:16px; }
+    .info-card a{ color:var(--accent); font-weight:600; text-decoration:none; }
+    .info-card a:hover{ text-decoration:underline; }
+
+
+    /* ===== Services dropdown (desktop) ===== */
+.has-submenu{ position:relative; display:inline-block; }
+.nav-dropbtn{
+  display:flex; align-items:center; gap:6px;
+  background:transparent; border:none; cursor:pointer;
+  font-weight:600; color:var(--ink); padding:8px 0; opacity:.9; text-decoration:none;
+  font-size: 16px;
+}
+.nav-dropbtn .caret{ transition: transform .2s ease; }
+.dropdown{
+  position:absolute; top:calc(100% + 14px); left:0;
+  min-width:260px; background:#fff; border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:10px; display:flex; flex-direction:column; gap:4px;
+  opacity:0; visibility:hidden; transform: translateY(-4px);
+  transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  z-index: 1200;
+}
+.dropdown a{
+  display:block; text-decoration:none; color:var(--ink);
+  padding:10px 12px; border-radius:10px; font-weight:600;
+}
+.dropdown a:hover{ background: rgba(110,86,207,.08); }
+
+
+/* Open states */
+.dropdown.open{ opacity:1; visibility:visible; transform: translateY(0); }
+.nav-dropbtn[aria-expanded="true"] .caret{ transform: rotate(180deg); }
+
+/* Hover open on pointer devices */
+@media (hover:hover){
+  .has-submenu:hover .dropdown{ opacity:1; visibility:visible; transform: translateY(0); }
+}
+
+/* ===== Drawer submenu (mobile) ===== */
+.drawer-dropbtn{
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; background:transparent; border:none; cursor:pointer;
+  padding:12px 2px; font-size:18px; font-weight:600; color:var(--ink); 
+  opacity:.9; text-decoration:none;
+  border-bottom:1px solid #eee;
+}
+
+
+.drawer-dropbtn .caret{ transition: transform .2s ease; }
+.drawer-dropbtn[aria-expanded="true"] .caret{ transform: rotate(180deg); }
+
+.drawer-submenu{ display:none; padding:6px 0 10px 10px; }
+.drawer-submenu.open{ display:block; }
+.drawer-submenu a{
+  display:block; padding:5px 2px 10px 8px; border-bottom:1px solid #eee;
+  color:var(--ink); text-decoration:none; font-weight:300;
+}
+
+/* footer */
+    footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
+
+
   </style>
 </head>
 <body>
-  <div>
-    <h1>Contact ForSit Media</h1>
-    <p>
-      WhatsApp us at: <br>
-      <a href="https://wa.me/393669747649" target="_blank">+39 366 974 7649</a>
-    </p>
-    <p><a href="index.html">← Back to Home</a></p>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html"><img src="images/logo.svg" alt="ForSit Media logo" class="nav-logo"></a>
+      <a href="index.html" class="nav-brand">ForSit Media</a>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="aboutus.html">About Us</a>
+      <div class="has-submenu">
+    <button id="servicesBtn" class="nav-dropbtn" aria-haspopup="true"
+            aria-expanded="false" aria-controls="servicesMenu">
+      Our Services
+      <svg class="caret" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+    <div id="servicesMenu" class="dropdown" role="menu">
+      <a id="srv-web"   href="website.html">Website creation</a>
+      <a id="srv-video" href="video.html">Video & photo production</a>
+      <a id="srv-social" href="social.html">Social media management</a>
+    </div></div>
+      <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+    <button id="burger" class="hamburger" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
   </div>
+</header>
+
+<!-- Off-canvas menu -->
+<div id="scrim" class="scrim" hidden></div>
+<aside id="drawer" class="mobile-drawer" aria-label="Mobile Navigation" aria-hidden="true">
+  <button id="closeDrawer" class="close" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 6l12 12M6 18L18 6"/>
+    </svg>
+  </button>
+  <a href="index.html">Home</a>
+  <a href="aboutus.html">About Us</a>
+  <!-- Services collapsible (mobile) -->
+  <button id="mServicesBtn" class="drawer-dropbtn" aria-expanded="false" aria-controls="mServicesMenu">
+    Our Services
+    <svg class="caret" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </button>
+  <div id="mServicesMenu" class="drawer-submenu">
+    <a id="m-srv-web"   href="website.html">Website creation</a>
+    <a id="m-srv-video" href="video.html">Video & photo production</a>
+    <a id="m-srv-social" href="social.html">Social media management</a>
+  </div></div>
+  <a href="contact.html" class="active">Contact</a>
+  <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+</aside>
+
+<main class="contact-wrapper">
+  <div class="contact-grid">
+    <!-- Contact Form -->
+    <div class="contact-card">
+      <h1>Get in Touch</h1>
+      <form action="https://formsubmit.co/forsitmedia@gmail.com" method="POST">
+        <div class="form-group">
+          <label for="fullname">Name and Last Name</label>
+          <input type="text" id="fullname" name="fullname" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number (with prefix)</label>
+          <input type="tel" id="phone" name="phone" placeholder="+39 366 974 7649" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required>
+          <input type="hidden" name="_next" value="http://127.0.0.1:5500/thanks.html">
+        </div>
+        <div class="form-group">
+          <label for="reason">Reason for Contact</label>
+          <select id="reason" name="reason" required>
+            <option value="">-- Select one --</option>
+            <option>Website Creation</option>
+            <option>Video Production / Photo Shooting</option>
+            <option>Social Media Management</option>
+            <option>Limited package ( social media + video production)</option>
+            <option>Full Package (all of the above)</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="brand">Tell us about your brand/ Company</label>
+          <textarea id="brand" name="brand" placeholder="Your brand name, what you do (ex. sell houses, run a hotel), and any extra notes..."></textarea>
+        </div>
+        <button type="submit" class="primary-btn">Send Message</button>
+      </form>
+    </div>
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <h2>Contact Info</h2>
+      <p><strong>📞 Phone:</strong> <a href="tel:+351912802743">+351 912802743</a></p>
+      <p><strong>✉️ Email:</strong> <a href="mailto:forsitmedia@gmail.com">forsitmedia@gmail.com</a></p>
+
+      <h3 style="margin-top:20px;">📍 Location</h3>Carcavelos, Portugal
+      <a href="https://www.google.com/maps/place/Carcavelos,+Portugal/" target="_blank" class="map-link">
+        <div class="map-photo">
+          <img src="images/carcavelos.png" alt="Carcavelos Beach, Portugal">
+          <div class="overlay">Open in Google Maps</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer style="text-align:center;padding:40px 0;color:#777;font-size:14px;">
+  © <span id="year"></span> ForSit Media — Lisbon. All rights reserved.
+</footer>
+
+<script>
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  const scrim  = document.getElementById('scrim');
+  const closeBtn = document.getElementById('closeDrawer');
+
+  function openDrawer(){
+    drawer.classList.add('open');
+    scrim.classList.add('show');
+    scrim.hidden = false;
+    burger.setAttribute('aria-expanded','true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    scrim.classList.remove('show');
+    scrim.hidden = true;
+    burger.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', () =>
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer()
+  );
+  closeBtn.addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+
+<script>
+
+
+
+  // Desktop dropdown
+  const servicesBtn  = document.getElementById('servicesBtn');
+  const servicesMenu = document.getElementById('servicesMenu');
+
+  if (servicesBtn && servicesMenu) {
+    servicesBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = servicesMenu.classList.toggle('open');
+      servicesBtn.setAttribute('aria-expanded', open);
+    });
+
+    // Click outside to close
+    document.addEventListener('click', (e) => {
+      if (!servicesMenu.contains(e.target) && !servicesBtn.contains(e.target)) {
+        servicesMenu.classList.remove('open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Escape closes
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        servicesMenu.classList.remove('open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Mobile drawer submenu
+  const mServicesBtn  = document.getElementById('mServicesBtn');
+  const mServicesMenu = document.getElementById('mServicesMenu');
+
+  if (mServicesBtn && mServicesMenu) {
+    mServicesBtn.addEventListener('click', () => {
+      const open = mServicesMenu.classList.toggle('open');
+      mServicesBtn.setAttribute('aria-expanded', open);
+    });
+
+    // Close drawer when a submenu link is tapped
+    mServicesMenu.querySelectorAll('a').forEach(a =>
+      a.addEventListener('click', () => { try { closeDrawer(); } catch(_){} })
+    );
+  }
+
+ 
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const reasonParam = (params.get('reason') || '').toLowerCase();
+  if (!reasonParam) return;
+
+  // Try a <select> whose id or name contains "reason"
+  const select = Array.from(document.querySelectorAll('select'))
+    .find(el => /reason/i.test(el.id || '') || /reason/i.test(el.name || ''));
+
+  if (select) {
+    let matched = false;
+    for (const opt of select.options) {
+      const val = (opt.value || '').toLowerCase();
+      const text = (opt.textContent || '').toLowerCase();
+      if (val.includes(reasonParam) || text.includes(reasonParam)) {
+        opt.selected = true;
+        matched = true;
+        break;
+      }
+    }
+    if (matched) {
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      // If you use a custom UI lib, trigger its update here as well.
+    }
+    return;
+  }
+
+  // Fallback: radio buttons named like "reason"
+  const radios = Array.from(document.querySelectorAll('input[type="radio"]'))
+    .filter(el => /reason/i.test(el.name || '') || /reason/i.test(el.id || ''));
+
+  for (const r of radios) {
+    const val = (r.value || '').toLowerCase();
+    const lbl = document.querySelector(`label[for="${r.id}"]`);
+    const text = (lbl?.textContent || '').toLowerCase();
+    if (val.includes(reasonParam) || text.includes(reasonParam)) {
+      r.checked = true;
+      r.dispatchEvent(new Event('change', { bubbles: true }));
+      break;
+    }
+  }
+});
+</script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const params = new URLSearchParams(window.location.search);
+
+  // Prefill "Reason for Contact"
+  const reason = params.get('reason');
+  if (reason) {
+    const select = document.getElementById('reason');
+    if (select) select.value = reason;
+  }
+
+  // Prefill the message in the textarea
+  const message = params.get('message');
+  if (message) {
+    const textarea = document.getElementById('brand') || document.querySelector('textarea');
+    if (textarea) {
+      textarea.value = decodeURIComponent(message.replace(/\+/g, ' '));
+      textarea.focus();
+    }
+  }
+});
+</script>
+
+  <!-- Footer year auto-update -->
+<script>
+(function () {
+  var y = new Date().getFullYear();
+  // fill any #year or .js-year you might add
+  document.querySelectorAll('#year, .js-year').forEach(function (el) {
+    el.textContent = y;
+  });
+})();
+</script>
+
 </body>
 </html>
