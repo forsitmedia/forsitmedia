@@ -129,68 +129,34 @@
   .gen-metric label{ font-size:12px; color:var(--muted); }
 
 
-/* ===== Fadus FEATURE (isolated) ===== */
-.results-feature{
-  --maxw: 1400px;                 /* make it BIG – tweak if you want */
-  --glass1: rgba(255,255,255,.10);
-  --glass2: rgba(255,255,255,.06);
-  --border: rgba(255,255,255,.18);
 
-  max-width: min(var(--maxw), 98vw);
-  margin: 36px auto;              /* centers the whole block */
+.results{
+  max-width:1100px;  /* same width as your other sections/cards */
+  margin:40px auto;
+  padding:0 16px;
 }
 
-.results-feature .card{
-  padding: 14px 14px 18px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--glass1), var(--glass2));
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 60px rgba(0,0,0,.40);
+.metrics-banner{
+  margin:16px 0;
+  border-radius:16px;
+  overflow:hidden;
+  background:#0b0b0e;                 /* matches your dark UI */
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
 }
 
-/* Big horizontal stage */
-.results-feature .stage{
-  width: 100%;
-  aspect-ratio: 16 / 9;          /* horizontal; change to 21/9 if you prefer wider */
-  border-radius: 14px;
-  background: #000;
-  overflow: hidden;
-
-  /* hard-center the media and let it grow */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.metrics-banner img{
+  display:block;
+  width:100%;
+  height:auto;                         /* no distortion */
 }
 
-/* Make the image as large as possible and centered (no crop) */
-.results-feature .stage img{
-  width: 100%;
-  height: 90%;
-  object-fit:scale-down;            /* switch to 'cover' if you want edge-to-edge crop */
-  display: block;
+.metrics-banner figcaption{
+  color:rgba(255,255,255,.82);
+  font-size:.95rem;
+  text-align:center;
+  padding:10px 12px;
 }
 
-/* Caption */
-.results-feature figcaption{
-  text-align: center;
-  margin-top: 16px;
-}
-.results-feature .title{
-  margin: 0;
-  font-weight: 900;
-  font-size: 25px;
-}
-.results-feature .subtitle{
-  margin: 6px 0 0;
-  font-size: 18px;
-  opacity: .95;
-}
-
-/* Mobile polish */
-@media (max-width: 720px){
-  .results-feature .card{ padding: 10px 10px 14px; }
-  .results-feature .stage{ border-radius: 12px; }
-}
 
 
   footer{
@@ -301,20 +267,22 @@
   </button>
 </article>
 
-<!-- ===== Fadus Events – Big Horizontal Feature ===== -->
-<section class="results-feature" aria-label="Fadus Events">
-  <figure class="card">
-    <div class="stage">
-      <!-- replace with your horizontal screenshot -->
-      <img src="images/results images/fadus summer .png"
-           alt="Fadus Events — account overview" />
-    </div>
-    <figcaption>
-      <h3 class="title">Fadus Events:</h3>
-      <p class="subtitle">Summer Instagram Strategy: higher reach, views and interaction with content.</p>
-    </figcaption>
+<section class="results">
+  <h2>Instagram Results (Fadus Events example)</h2>
+
+  <figure class="metrics-banner">
+    <picture>
+      <source type="image/webp" srcset="/images/results Images/ig-kpis-banner.webp">
+      <img
+        src="/images/results images/ig-kpis-banner.png"
+        alt="Instagram KPIs: Visualizzazioni 52.789 • Copertura 10.601 • Interazioni 1.662"
+        loading="lazy"
+        decoding="async">
+    </picture>
+    <figcaption>Summer Instagram strategy — higher reach, views, and interactions.</figcaption>
   </figure>
 </section>
+
 
 <!-- ===== General analytics (not client-specific) ===== -->
 <section class="general">
