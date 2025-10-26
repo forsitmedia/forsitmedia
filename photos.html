@@ -147,8 +147,8 @@
 </header>
 
 <section class="head">
-  <h1> Automatica Carousel of our Photos </h1>
-  <h2> (it might take some seconds to charge)</h2>
+  <h1> Automatic Carousel of our Photos </h1>
+  
   <p> We aim to capture the most authentic moments—prioritizing not only image quality,
     but also curiosity and meaningful detail. Sometimes the unexpected micro-story
     is more powerful than a perfect frame. Our goal is to find both.</p>
@@ -190,12 +190,11 @@
 </footer>
 
 <script>
-/* ===== Build slides from your folder; auto-scroll; pause/resume ===== */
+/* Fast carousel: show first slide immediately, lazy-load the rest */
 (function(){
-  const basePath = "images/photos section/";                 // space is OK; encodeURI handles it
-  const horizontals = new Set([1,2,3,4,6,9,16]);             // 'h' files
-  const total = 21;
-  const tryExts = ["JPG","JPEG","PNG","jpg","jpeg","png"];   // browsers won't show HEIC
+  const base = "/images/carousel/";
+  const files = Array.from({length: 17}, (_,i) => `image${i+1}.webp`); // adjust if you add more
+
   const slidesEl = document.getElementById('slides');
   const dotsEl   = document.getElementById('dots');
   const stage    = document.getElementById('stage');
@@ -203,32 +202,19 @@
   const nextBtn  = document.getElementById('next');
 
   const slides = [];
-  let idx = 0;
-  let timer = null;
-  const delay = 2700; // ms
+  let idx = 0, timer = null;
+  const delay = 2700;
 
-  function tryLoad(name, cb){
-    let i = 0;
-    const probe = new Image();
-    function attempt(){
-      if (i >= tryExts.length){
-        console.warn("Skipped (not found):", name);
-        cb(null); return;
-      }
-      const src = encodeURI(basePath + name + "." + tryExts[i++]);
-      probe.onload = ()=> cb(src);
-      probe.onerror = attempt;
-      probe.src = src;
-    }
-    attempt();
-  }
+  function addSlide(src, eager=false){
+    const loading = eager ? 'eager' : 'lazy';
+    const fetchp  = eager ? 'high'  : 'low';
+    const decode  = eager ? 'sync'  : 'async';
 
-  function addSlide(src){
     const slide = document.createElement('div');
     slide.className = 'slide';
     slide.innerHTML = `
-      <img class="backdrop" src="${src}" alt="">
-      <img class="main"     src="${src}" alt="Events • Food • Moments">
+      <img class="backdrop" src="${src}" alt="" loading="${loading}" fetchpriority="${fetchp}" decoding="${decode}">
+      <img class="main"     src="${src}" alt="Events • Food • Moments" loading="${loading}" fetchpriority="${fetchp}" decoding="${decode}">
       <div class="caption">Events • Food • Moments</div>
     `;
     slidesEl.appendChild(slide);
@@ -236,7 +222,7 @@
 
     const dot = document.createElement('div');
     dot.className = 'dot';
-    dot.addEventListener('click', ()=> goTo(slides.length-1,true));
+    dot.addEventListener('click', ()=> goTo(slides.length-1, true));
     dotsEl.appendChild(dot);
   }
 
@@ -247,14 +233,9 @@
     [...dotsEl.children].forEach((d,i)=> d.classList.toggle('active', i===idx));
     if (user) restartAuto();
   }
-
-  function next(){ goTo(idx+1,true); }
-  function prev(){ goTo(idx-1,true); }
-
-  function startAuto(){
-    stopAuto();
-    timer = setInterval(()=> goTo(idx+1,false), delay);
-  }
+  function next(){ goTo(idx+1, true); }
+  function prev(){ goTo(idx-1, true); }
+  function startAuto(){ stopAuto(); timer = setInterval(()=> goTo(idx+1, false), delay); }
   function stopAuto(){ if (timer){ clearInterval(timer); timer=null; } }
   function restartAuto(){ stopAuto(); startAuto(); }
 
@@ -264,27 +245,18 @@
     if (e.key==="ArrowLeft")  prev();
     if (e.key==="ArrowRight") next();
   });
-
-  // pause on hover / touch
   stage.addEventListener('mouseenter', stopAuto);
   stage.addEventListener('mouseleave', startAuto);
   stage.addEventListener('touchstart', stopAuto, {passive:true});
   stage.addEventListener('touchend', ()=> setTimeout(startAuto, 1200), {passive:true});
 
-  // build slides
-  (async function build(){
-    for (let n=1; n<=total; n++){
-      const base = horizontals.has(n) ? `image${n}h` : `image${n}`;
-      await new Promise(res=>{
-        tryLoad(base, (src)=>{ if (src) addSlide(src); res(); });
-      });
-    }
-    goTo(0,false);
-    startAuto();
-  })();
+  // Paint the first slide instantly; stream the rest in the background
+  addSlide(base + files[0], /*eager=*/true);
+  goTo(0, false);
+  startAuto();
+  files.slice(1).forEach(name => addSlide(base + name));
 })();
 </script>
-
 
 
 
