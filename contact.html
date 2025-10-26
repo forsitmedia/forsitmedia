@@ -31,7 +31,7 @@
       margin:0;
       font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue", sans-serif;
       color:var(--ink);
-      background:var(--bg);
+       background: linear-gradient(135deg, #7e64ff 0%, #f8e9e9 100%);
       line-height:1.6;
       padding-top:64px; /* push below fixed nav */
     }
@@ -129,7 +129,7 @@
 
     .map-photo{ position:relative; border-radius:14px; overflow:hidden; margin-top:12px; box-shadow:var(--shadow);}
     .map-photo img{ width:100%; height:300px; object-fit:cover; display:block; }
-    .map-photo .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); color:#fff; font-weight:700; font-size:16px; opacity:0; transition:opacity .3s ease; }
+    .map-photo .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); color:#e3e3e3; font-weight:700; font-size:16px; opacity:0; transition:opacity .3s ease; }
     .map-photo:hover .overlay{ opacity:1; }
 
     .form-group{ margin-bottom:18px; }
@@ -324,7 +324,15 @@
       <p><strong>✉️ Email:</strong> <a href="mailto:forsitmedia@gmail.com">forsitmedia@gmail.com</a></p>
 
       <h3 style="margin-top:20px;">📍 Location</h3>Carcavelos, Portugal
-      <a href="https://www.google.com/maps/place/Carcavelos,+Portugal/" target="_blank" class="map-link">
+      <a
+  href="https://www.google.com/maps/place/Carcavelos,+Portugal/"
+  target="_blank"
+  rel="noopener"
+  class="map-btn"
+  aria-label="Open Carcavelos in Google Maps"
+>
+  Open in Google Maps
+</a>
         <div class="map-photo">
           <img src="images/carcavelos.png" alt="Carcavelos Beach, Portugal">
           <div class="overlay">Open in Google Maps</div>
