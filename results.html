@@ -82,7 +82,7 @@
   .panel{ display:flex; flex-direction:column; gap:10px; justify-content:center; }
   .panel h2{ margin:0; font-size:20px; font-weight:800; }
   .note{ color:#e9e9f4; font-size:16px; opacity:.95; }
-  .desc{ color:#cfd0f7; font-size:18px; line-height:1.5; }
+  .desc{ color:#ffffff; font-size:18px; line-height:1.5; }
   .metrics{
     display:grid; grid-template-columns:repeat(2, minmax(140px,1fr)); gap:10px;
   }
@@ -157,7 +157,71 @@
   padding:10px 12px;
 }
 
+/* ===== Fix misaligned preview images on mobile ===== */
+@media (max-width: 900px) {
+  .result-card {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 18px;
+    text-align: center; /* center-align contents */
+  }
 
+  /* Center the media (the phone preview) */
+  .result-card .media {
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Make the phone smaller and perfectly centered */
+  .result-card .phone {
+    margin: 0 auto;
+    width: 80%;
+    max-width: 320px;
+  }
+
+  /* Keep arrows visible but inside the card width */
+  .result-card .prev,
+  .result-card .next {
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12px;
+    right: 12px;
+  }
+}
+
+
+/* === Card typography tweaks === */
+.result-card .panel h2{
+  font-size: clamp(22px, 5.2vw, 32px);
+  line-height: 1.1;
+  margin: 0 0 6px;
+}
+.result-card .panel .note{
+  font-size: clamp(12px, 3.2vw, 14px);
+}
+.result-card .panel .desc{
+  font-size: clamp(14px, 3.8vw, 17px);
+}
+
+/* Mobile: arrows are absolutely positioned and will be placed via JS */
+@media (max-width: 900px){
+  .result-card{ position: relative; }
+  .result-card .media{ position: relative; } /* anchor */
+  .result-card .nav{
+    position: absolute;
+    left: auto; right: auto;                 /* JS will set left/right */
+    top: 50%;                                /* fallback */
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,0,0,.45);
+    border: 1px solid rgba(255,255,255,.3);
+    box-shadow: 0 6px 14px rgba(0,0,0,.3);
+  }
+  .result-card .nav.prev{ left: 10px;  }
+  .result-card .nav.next{ right: 10px; }
+}
 
   footer{
     max-width: var(--wrap-w);
@@ -370,6 +434,42 @@ document.querySelectorAll('.result-card').forEach(card=>{
   apply(i); // sync on load
 });
 </script>
+
+<script>
+(function(){
+  function positionArrows(card){
+    const media = card.querySelector('.media');
+    const prev  = card.querySelector('.prev');
+    const next  = card.querySelector('.next');
+    if (!media || !prev || !next) return;
+
+    // y = middle of the media box, relative to the card
+    const m = media.getBoundingClientRect();
+    const c = card.getBoundingClientRect();
+    const y = m.top - c.top + (m.height / 2);
+
+    prev.style.top = y + 'px';
+    next.style.top = y + 'px';
+  }
+
+  // Run for all cards now and on resize/orientation
+  const cards = Array.from(document.querySelectorAll('.result-card'));
+  function updateAll(){ cards.forEach(positionArrows); }
+  window.addEventListener('resize', updateAll);
+  window.addEventListener('orientationchange', updateAll);
+  window.addEventListener('load', () => setTimeout(updateAll, 0));
+
+  // If your slide changes, re-run for that card:
+  document.querySelectorAll('.result-card').forEach(card=>{
+    const phone = card.querySelector('.phone');
+    if (phone) phone.addEventListener('click', ()=> positionArrows(card));
+    const next = card.querySelector('.next'), prev = card.querySelector('.prev');
+    next && next.addEventListener('click', ()=> positionArrows(card));
+    prev && prev.addEventListener('click', ()=> positionArrows(card));
+  });
+})();
+</script>
+
 
 </body>
 </html>
