@@ -511,6 +511,138 @@ body{ padding-top:64px; }
 }
 
 
+/* ===== iPhone polish (≤480px) ===== */
+@media (max-width:480px){
+
+  /* Titles a bit smaller (not too much) */
+  .hero h1{ font-size:clamp(22px,7vw,30px); }
+  .split h3{ font-size:clamp(20px,5.6vw,28px); }
+  .section-title{ font-size:clamp(22px,6.5vw,28px); }
+
+  /* Step 1: show less empty paper, make carousel visible */
+  .sketch-stage .stage-canvas{ height:170px; }
+  .sketch-layer{ transform:translateY(-1px); }   /* crops the blank bottom of the sketch */
+  
+  .live-grid{ grid-template-columns:130px 1fr; gap:8px; align-items:start; }
+  .gallery{ grid-template-columns:repeat(2,1fr); gap:6px; } /* squares a bit smaller */
+  .promo{ max-height:280px; }                      /* more room for the carousel */
+
+  /* Code card: no inner scrolling; readable */
+  .media-frame pre{
+    font-size:12px; line-height:1.45;
+    white-space:pre-wrap; word-break:break-word;
+    overflow:visible; max-height:none;
+  }
+  .media-frame .codebar{ font-size:11px; }
+}
+
+/* Center cards/media on narrow screens (fixes “right-heavy” look) */
+@media (max-width:600px){
+  .device-mock, .media-frame, .project-card, .ba-card{ margin-left:auto; margin-right:auto; }
+  .project-media{ display:flex; align-items:center; justify-content:center; }
+  .project-media img, .project-media video{ width:100%; height:auto; object-fit:contain; }
+}
+
+/* === Fix right-attached look on the last two sections === */
+
+/* Past Projects */
+#past-projects { padding-left:16px; padding-right:16px; }
+#past-projects .projects-grid { justify-items:center; }     /* center grid items */
+#past-projects .project-card {
+  width:min(690px,100%);                                     /* readable width */
+  margin-inline:auto;                                        /* center card */
+}
+#past-projects .project-media{
+  display:flex; align-items:center; justify-content:center;  /* center media */
+}
+#past-projects .project-media img,
+#past-projects .project-media video{
+  width:100%; height:auto; object-fit:contain; display:block;
+}
+
+/* Before & After */
+.before-after { padding-left:16px; padding-right:16px; justify-items:center; }
+.before-after .ba-card{
+  width:min(640px,100%);
+  margin-inline:auto;
+}
+.before-after .ba-media{
+  display:flex; align-items:center; justify-content:center;
+}
+.before-after .ba-media img,
+.before-after .ba-media video{
+  max-width:100%; height:auto; object-fit:contain; display:block;
+}
+
+/* On small screens force single column + centered items */
+@media (max-width:600px){
+  #past-projects .projects-grid,
+  .before-after { grid-template-columns:1fr; }
+}
+
+/* Prevent tiny horizontal overflow that can bias layout to the right */
+html, body { overflow-x:hidden; }
+
+
+
+
+  /* Carousel: always fully visible (no crop) */
+  .promo{
+    height: 140px;              /* fixed, visible height */
+    max-height: none;
+  }
+  .promo-slide{
+    object-fit: contain;        /* show whole image */
+  }
+  .promo-caption{
+    font-size: 8px;
+    left: 8px; bottom: 8px;
+    padding: 4px 8px;
+  }
+
+  /* Make the live header a touch slimmer so content breathes */
+  .live-hero{ height: 5px; }
+  .live-hero-bar{ padding: 1px 1px; }
+  .live-logo{ padding: 4px 8px; font-size: 8px; }
+  .live-nav{ gap: 10px; }
+  .pill{ padding: 5px 8px; font-size: 8px; }
+
+/* Center the section titles */
+.section-title{
+  text-align:center;
+}
+
+/* Tighten spacing between “Past Projects” and “Renovation Design” */
+#past-projects{
+  /* was 80px 0; */
+  padding:56px 0 28px;      /* less bottom air */
+}
+
+/* If the Renovation block is the one with the before/after cards */
+.before-after{
+  margin-top:0;             /* remove extra gap above the grid */
+}
+
+/* Mobile: a bit tighter still */
+@media (max-width:600px){
+  #past-projects{ padding:44px 0 18px; }
+  .section-title{ margin-bottom:14px; }
+}
+/* Mobile-only: in #step-2 show the text BEFORE the code block */
+@media (max-width: 600px){
+  #step-2 .split{
+    display:grid;                 /* keep layout consistent with desktop */
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "text"
+      "code";                     /* text first, code second */
+    gap: 16px;
+  }
+  #step-2 .media-frame{ grid-area: code; }              /* the code card */
+  #step-2 .split > :not(.media-frame){ grid-area: text; } /* the step text */
+}
+
+
  /* Footer */
     footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
 
@@ -830,7 +962,7 @@ body{ padding-top:64px; }
 
      <div class="cta-buttons">
       <a class="cta-btn small" href="video.html">🎥 Video production & photography</a>
-      <a class="cta-btn small" href="socialmedia.html">📱 Social media management</a>
+      <a class="cta-btn small" href="social.html">📱 Social media management</a>
     </div>
 
     <p class="muted">💡 Remember, you can get the full package.</p>
