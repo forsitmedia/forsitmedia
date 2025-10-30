@@ -211,6 +211,63 @@
   color:var(--ink); text-decoration:none; font-weight:300;
 }
 
+/* Phone tweaks: smaller card titles */
+@media (max-width: 480px){
+  .contact-card{ padding: 28px; }
+  .info-card{ padding: 28px; }
+
+  .contact-card h1{
+    font-size: clamp(28px, 9vw, 40px);  /* was 60px */
+    line-height: 1.08;
+    margin-bottom: 14px;
+  }
+
+  .info-card h2{
+    font-size: clamp(22px, 7.2vw, 32px); /* was 60px */
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+}
+
+.form-group label{ font-size: 14px; }
+
+/* Keep inputs perfectly inside the card on mobile & desktop */
+.contact-card,
+.contact-card * {
+  box-sizing: border-box;   /* width includes padding + border */
+}
+
+.contact-card {
+  overflow: hidden;         /* clip any 1px shadow bleed */
+}
+
+/* Make fields use the exact inner width of the card */
+.contact-card input,
+.contact-card select,
+.contact-card textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;                /* no accidental side margins */
+}
+
+@media (max-width: 480px){
+  .contact-card { padding-inline: 26px; } /* was 28/32 — keep it symmetric */
+}
+/* Touch devices: remove the overlay label that appears on hover */
+@media (hover: none) and (pointer: coarse){
+  /* If the text is created with ::after on the link */
+  .map-link::after { content: none !important; display: none !important; }
+
+  /* If you used a separate absolutely-positioned element */
+  .map-overlay { display: none !important; opacity: 0 !important; }
+
+  /* Neutralize any hover style that might still fade the image */
+  
+.map-link::after { content: none !important; display: none !important; }
+.map-overlay { display: none !important; opacity: 0 !important; }
+}
+
 /* footer */
     footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
 
