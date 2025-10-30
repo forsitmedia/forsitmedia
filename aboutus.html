@@ -393,7 +393,128 @@ section.split {
     .cta-block h2{font-size:36px;margin-bottom:16px;}
     .cta-block a{display:inline-block;margin-top:20px;padding:14px 32px;border-radius:999px;background:#4B0082;color:#fff;text-decoration:none;font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.25);}
 
-    
+    /* ===== iPhone/mobile polish for About Us ===== */
+@media (max-width: 480px){
+
+  /* Global side gutters */
+  section.story,
+  section.split,
+  .mission-vision,
+  .values,
+  .cta-block { padding-left:16px; padding-right:16px; }
+
+  /* --- HERO --- */
+  .about-hero{ height: 68vh; }                 /* a bit shorter on phones */
+  .about-hero-content h1{ font-size: clamp(36px, 8.5vw, 44px); margin-bottom:10px; }
+  .about-hero-content p { font-size: 16px; line-height: 1.45; }
+
+  /* --- OUR STORY (image then paragraph) --- */
+  section.story{
+    /* switch grid → column to control order & spacing tightly */
+    display: flex; flex-direction: column; gap: 16px;
+    padding-top: 48px; padding-bottom: 32px;
+  }
+  .story-image{
+    order: 1;
+    min-height: 300px;                  /* smaller */
+    background-size: contain;           /* show full quote image */
+    background-position: center; 
+    background-repeat: no-repeat;
+    border-radius: 16px;
+  }
+  .story-text{
+    order: 2;
+  }
+  .story-text h2{
+    font-size: clamp(28px, 8.5vw, 36px);
+    margin: 10px 0 8px;
+  }
+  .story-text p{
+    font-size: 16px; line-height: 1.55; margin: 0 0 10px;
+  }
+
+  /* --- WHO WE ARE (couple image smaller, no cropping) --- */
+  section.split{
+    display: flex; flex-direction: column; gap: 16px;
+    padding-top: 32px; padding-bottom: 32px;
+  }
+  .split-image{
+    min-height: 280px;                  /* smaller block */
+    background-size: contain;           /* keep the Canva text visible */
+    background-position: center; 
+    background-repeat: no-repeat;
+    border-radius: 16px;
+  }
+  .split-text h2{
+    font-size: clamp(28px, 8.5vw, 36px);
+    margin: 6px 0 8px;
+  }
+  .split-text p{ font-size: 16px; line-height: 1.55; margin: 0 0 10px; }
+
+  /* --- Mission & Vision spacing tighter --- */
+  .mission-vision{
+    grid-template-columns: 1fr; gap: 16px;
+    margin: 40px auto;                  /* was ~100px */
+    padding-left: 16px; padding-right: 16px;
+  }
+  .mv-card{ padding: 22px; }
+  .mv-card h2{ margin-bottom: 10px; font-size: 22px; }
+  .mv-card p{ font-size: 16px; line-height: 1.55; }
+
+  /* --- Values (“How We Work”) tighter --- */
+  .values{
+    padding-top: 40px; padding-bottom: 32px;
+  }
+  .values h2{
+    font-size: clamp(26px, 7.8vw, 32px);
+    margin-bottom: 14px;
+  }
+  .values-grid{ gap: 14px; }
+  .value-card{ padding: 18px; }
+
+  /* --- CTA block with less air under the cards --- */
+  .cta-block{
+    padding-top: 44px; padding-bottom: 44px;   /* was 80px */
+  }
+  .cta-block h2{ font-size: clamp(22px, 6.5vw, 28px); }
+  .cta-block p{ font-size: 16px; line-height: 1.5; }
+  .cta-block a{
+    padding: 12px 24px; font-size: 16px;
+  }
+}
+
+/* === FIX image URLs with spaces + safe sizing and order on mobile === */
+
+/* 1) Use root-absolute, percent-encoded paths (most robust) */
+.story-image { background-image: url("/images/our%20story.png"); }
+.split-image { background-image: url("/images/who%20we%20are.png"); }
+
+/* 2) Prefer aspect-ratio so they don’t crop or vanish */
+.story-image,
+.split-image {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Desktop/tablet default */
+.story-image { background-size: cover;  aspect-ratio: 16 / 10; }
+.split-image { background-size: cover;  aspect-ratio: 4 / 3; }
+
+/* 3) iPhone/mobile tweaks: show the whole Canva images (no cropping) */
+@media (max-width: 480px){
+  /* Order: image → paragraph (Our Story), then paragraph → image (Who We Are) */
+  .story-image { order: 2; background-size: contain; }
+  .story-text  { order: 2; }
+
+  .split-text  { order: 1; }   /* text first */
+  .split-image { order: 2; background-size: contain; }
+
+  /* Make them a bit smaller and tighter vertically */
+  .story-image, .split-image { aspect-ratio: 16 / 11; border-radius: 16px; }
+}
+
+
+
   </style>
 </head>
 <body>
