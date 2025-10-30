@@ -558,6 +558,104 @@ body {
 }
 
 
+
+/* PHONE VIEW */
+
+/* === Mobile polish (phones) === */
+@media (max-width: 480px){
+
+  /* Global comfy gutters */
+  .title-block,
+  .content,
+  .free-explainer,
+  .services,
+  .steps-grid,
+  .pricing-transparency,
+  .contact-section { padding-left:16px; padding-right:16px; }
+
+  /* Hero title + intro */
+  .title-block { padding-top:28px; padding-bottom:8px; }
+  .title-block h1{
+    /* your current clamp has min > max; this keeps it elegant on phones */
+    font-size: clamp(32px, 9vw, 44px);
+    margin: 16px 0 20px;
+  }
+  .subtitle{
+    font-size: clamp(16px, 5.2vw, 20px);
+    margin: 10px 0 14px;
+  }
+  .title-block .lead{ font-size: 15px; line-height: 1.55; }
+
+  /* SEO callout (squiggle staying inside) */
+  .seo-callout{ padding: 0 16px; overflow: hidden; }
+  .seo-callout svg{ width:28px; height:12px; }
+
+  /* CTA button: easier tap + centered */
+  .content{ padding-top: 22px; padding-bottom: 22px; text-align:center; }
+  .free-trial-btn{ width:100%; max-width:420px; }
+
+  /* “You might be wondering” block */
+  .free-explainer{
+    max-width: 36ch;           /* nicer line length */
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  /* Services section */
+  .services-title{
+    /* was 4rem; too big on small screens */
+    font-size: clamp(28px, 9vw, 36px);
+    margin-bottom: 28px;
+  }
+  .service-cards{ grid-template-columns: 1fr; gap: 24px; }
+  .service-card{ min-height: 420px; }
+  .card-content{ padding: 18px; }
+
+  /* “How does it work?” */
+  .steps{ padding: 10px 0; }
+  .steps-title{
+    /* your current clamp has min 80 > max 38, causing huge text */
+    font-size: clamp(28px, 9vw, 36px);
+    margin: 0 16px 10px;
+  }
+  .steps-subtitle{
+    padding: 0 0;              /* already getting 16px from .steps-grid above */
+    max-width: 27ch;
+    margin: 0 auto 6px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .steps-grid{ padding-top: 24px; padding-bottom: 24px; gap: 16px; }
+  .step-card{ padding: 22px 18px; }
+
+  /* Money card */
+  .pricing-transparency{ padding-top: 56px; padding-bottom: 56px; }
+  .pricing-card{ padding: 24px; }
+  .pricing-card h2{
+    /* same clamp inversion fix */
+    font-size: clamp(24px, 8vw, 34px);
+    margin-bottom: 10px;
+  }
+
+  /* Contact */
+  .contact-section{ padding-top: 64px; padding-bottom: 64px; }
+}
+
+
+  .free-trial-btn{
+    display: block;                /* so margin:auto centers it */
+    width: min(100%, 340px);       /* <= adjust 320–360 to taste */
+    margin: 0 auto 18px;           /* centered */
+    padding: 14px 18px;
+    box-sizing: border-box;        /* include padding in width */
+    line-height: 1.2;
+    font-size: clamp(16px, 4.2vw, 18px);
+  }
+
+  /* if the button sits in a flex row somewhere, this keeps it centered */
+  .free-trial-btn { align-self: center; }
+
+
      /* Footer */
     footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
 
