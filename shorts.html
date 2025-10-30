@@ -284,6 +284,35 @@ body{ padding-top: calc(64px + 24px); }
     .ai-row{ grid-template-columns: 1fr; }
   }
 
+
+  /* === 1) Hard stop any horizontal scroll (iOS) === */
+html, body{
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Keep touch only vertical (prevents side-swipe drift on iPhone) */
+*{ touch-action: pan-y; }              /* widely supported */
+body, .result-card, .phone{ overscroll-behavior-x: none; }  /* extra guard */
+
+/* === 2) Ensure no card can be wider than the viewport === */
+.result-card,
+.head,
+.general,
+.metrics-banner{
+  max-width: calc(100vw - 32px);       /* 32px = body’s 16px side padding x 2 */
+  margin-left:auto; margin-right:auto;
+}
+
+/* === 3) Make sure nav arrows never create overflow === */
+.nav.prev{ left: 8px; }
+.nav.next{ right: 8px; }
+
+/* On narrow screens switch to single column early and tighten padding */
+@media (max-width: 900px){
+  .result-card{ grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+}
+
     footer{
     max-width: var(--wrap-w);
     margin: 40px auto 0; color: var(--muted); text-align:center; font-size:14px;
