@@ -184,6 +184,63 @@
 
 
 
+/* === 2) All tiles: subtle “opens” indicator (↗) === */
+.tile::before{
+  content: "↗";
+  position: absolute;
+  top: 10px; right: 10px;
+  padding: 6px 8px;
+  font-size: 14px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0,0,0,.45);
+  border-radius: 999px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.tile:hover::before,
+.tile:focus-visible::before{ opacity: 1; transform: none; }
+
+/* Touch devices: show the hint lightly so users know it's tappable */
+@media (hover:none){
+  .tile::before{ opacity: .85; }
+}
+
+
+
+/* iPhone / small screens: make the drone CTA small, bottom-left, and fully inside */
+@media (max-width: 640px){
+  .vp-grid .video{ position: relative; overflow: hidden; }
+
+  .vp-grid .video .hover-cta{
+    /* place bottom-left */
+    top: auto !important;
+    bottom: 12px !important;
+    left: 12px !important;
+    right: auto !important;
+    transform: none !important;
+
+    /* size + readability */
+    padding: 6px 10px !important;
+    font-size: 7px !important;
+    line-height: 1.2 !important;
+    border-radius: 12px !important;
+
+    /* keep it inside the video even with long text */
+    max-width: 78% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+
+    /* lighter background so video is visible */
+    background: rgba(0,0,0,.30) !important;
+    opacity: .95 !important;
+  }
+}
+
+
+
 
     /* Footer */
     footer{ text-align:center; padding:40px 0 60px; color:#777; font-size:14px; }
