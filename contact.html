@@ -268,6 +268,52 @@
 .map-overlay { display: none !important; opacity: 0 !important; }
 }
 
+/* Card */
+.map-card{
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.18);
+  cursor: pointer;
+  background:#000;
+}
+.map-card img{
+  display:block; width:100%; height:auto; object-fit:cover;
+  pointer-events:none;            /* <- stops iOS map overlay */
+}
+
+/* Floating CTA on the image */
+.map-cta{
+  position:absolute; left:16px; bottom:16px;
+  padding:10px 14px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:8px;
+  font-weight:800; color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.25);
+  background:rgba(17,17,17,.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 10px 26px rgba(0,0,0,.28);
+}
+
+/* The inline pill link above the image */
+.pill-map{
+  margin-left:8px;
+  display:inline-block;
+  padding:8px 12px; border-radius:999px;
+  font-weight:800; text-decoration:none;
+  color:#fff;
+  background:linear-gradient(90deg,#9E8CFC,#6E56CF);
+  box-shadow:0 10px 22px rgba(110,86,207,.25);
+}
+.pill-map:hover{ filter:brightness(1.05); }
+
+/* Slightly tighter on phones */
+@media (max-width: 600px){
+  .map-cta{ left:12px; bottom:12px; padding:8px 12px; font-size:14px; }
+}
+
+.map-card img { pointer-events: none; }
+
+
 /* footer */
     footer{ text-align:center; padding:40px 0; color:#777; font-size:14px; }
 
@@ -381,22 +427,30 @@
       <p><strong>📞 Phone:</strong> <a href="tel:+351912802743">+351 912802743</a></p>
       <p><strong>✉️ Email:</strong> <a href="mailto:forsitmedia@gmail.com">forsitmedia@gmail.com</a></p>
 
-      <h3 style="margin-top:20px;">📍 Location</h3>Carcavelos, Portugal
-      <a
-  href="https://www.google.com/maps/place/Carcavelos,+Portugal/"
-  target="_blank"
-  rel="noopener"
-  class="map-btn"
-  aria-label="Open Carcavelos in Google Maps"
->
-  Open in Google Maps
-</a>
-        <div class="map-photo">
-          <img src="images/carcavelos.png" alt="Carcavelos Beach, Portugal">
-          <div class="overlay">Open in Google Maps</div>
-        </div>
-      </a>
-    </div>
+  <!-- Location -->
+<section class="location">
+  <h3>📍 Location</h3>
+  <p>
+    Carcavelos, Portugal
+  
+  </p>
+
+  <div class="map-card"
+     role="link" tabindex="0"
+     aria-label="Open Carcavelos on Google Maps"
+     data-maps="https://www.google.com/maps?q=Carcavelos%2C+Portugal">
+  <img src="images/carcavelos2.png" alt="Golden beach at Carcavelos with surfers">
+  <div class="map-cta" role="button" tabindex="0">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <path fill="currentColor"
+        d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+    </svg>
+    Open in Maps
+  </div>
+</div>
+
+</section>
+
   </div>
 </main>
 
@@ -564,6 +618,27 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 })();
 </script>
+
+<script>
+  document.querySelectorAll('.map-card').forEach(card => {
+    const url = card.dataset.maps;
+    const open = () => window.open(url, '_blank', 'noopener');
+
+    // whole card opens maps
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+
+    // pill opens maps too (and stops bubbling)
+    const pill = card.querySelector('.map-cta');
+    pill?.addEventListener('click', (e) => { e.stopPropagation(); open(); });
+    pill?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); open(); }
+    });
+  });
+</script>
+
 
 </body>
 </html>
