@@ -513,6 +513,21 @@ section.split {
   .story-image, .split-image { aspect-ratio: 16 / 11; border-radius: 16px; }
 }
 
+/* Put this near the end of <style> on aboutus.html */
+html, body { max-width: 100%; overflow-x: hidden; }
+body { overscroll-behavior-x: none; }            /* iOS/Chrome: no side rubber-band */
+.about-hero,
+section.story,
+section.split,
+.mission-vision,
+.values,
+.cta-block { overflow-x: hidden; }
+
+/* Belt & suspenders: media never exceed the viewport */
+img, video { max-width: 100%; height: auto; display: block; }
+
+/* Shadows can cause sub-px overflow; contain their paint */
+.values, .mission-vision { contain: paint; }
 
 
   </style>
