@@ -3,16 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sketch → Live | ForSit Media</title>
- <link rel="icon" href="images/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+<title>Website Creation | ForSit Media</title>
+ <!-- Canonical -->
+<link rel="canonical" href="https://forsitmedia.com/website.html">
 
-  <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<!-- Favicons (Google uses PNG/ICO, not SVG) -->
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=9">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=9">
+<link rel="icon" href="/favicon.ico?v=9">
+
+<!-- Optional SVG for browsers (Google ignores) -->
+<link rel="icon" type="image/svg+xml" href="/images/logo.svg?v=9">
+
+<!-- Apple / PWA -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=9">
+<link rel="manifest" href="/site.webmanifest?v=9">
 <meta name="theme-color" content="#111111">
+
 <style>
      :root{
       --ink:#0b0b0b;
@@ -655,13 +662,13 @@ html, body { overflow-x:hidden; }
 <header class="navbar" role="banner">
   <div class="nav-inner">
     <div class="nav-left">
-      <a href="index.html" class="nav-brand" aria-label="ForSit Media Home">
+      <a href="/" class="nav-brand" aria-label="ForSit Media Home">
         <img src="images/logo.svg" alt="" class="nav-logo">
       </a>
-      <a href="index.html" class="nav-brand">ForSit Media</a>
+      <a href="/" class="nav-brand">ForSit Media</a>
     </div>
     <nav class="nav-links" aria-label="Primary">
-      <a href="index.html">Home</a>
+      <a href="/">Home</a>
       <a href="aboutus.html">About Us</a>
        <div class="has-submenu">
     <button id="servicesBtn" class="nav-dropbtn" aria-haspopup="true"
@@ -677,7 +684,7 @@ html, body { overflow-x:hidden; }
       <a id="srv-social" href="social.html">Social media management</a>
     </div>
   </div>
-      <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+      <a href="/#free-trial-form" class="cta">Start Free Trial</a>
       <a href="contact.html">Contact</a>
       
     </nav>
@@ -695,7 +702,7 @@ html, body { overflow-x:hidden; }
       <path d="M6 6l12 12M6 18L18 6"/>
     </svg>
   </button>
-  <a href="index.html">Home</a>
+  <a href="/">Home</a>
   <a href="aboutus.html">About Us</a>
     <!-- Services collapsible (mobile) -->
   <button id="mServicesBtn" class="drawer-dropbtn" aria-expanded="false" aria-controls="mServicesMenu">
@@ -710,7 +717,7 @@ html, body { overflow-x:hidden; }
     <a id="m-srv-social" href="social.html">Social media management</a>
   </div>
   <a href="contact.html">Contact</a>
-  <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+  <a href="/#free-trial-form" class="cta">Start Free Trial</a>
 </aside>
 
 <!-- ===== HERO ===== -->
@@ -966,7 +973,7 @@ html, body { overflow-x:hidden; }
     </div>
 
     <p class="muted">💡 Remember, you can get the full package.</p>
-    <a class="cta-btn" href="index.html#services">See All Services</a>
+    <a class="cta-btn" href="/#services">See All Services</a>
   </div>
   
 </section>

@@ -6,11 +6,20 @@
   <title>About Us — ForSit Media | Social Media & Web Design in Lisbon</title>
   <meta name="description" content="ForSit Media is a Lisbon-based creative studio. We make simple, honest, organic content and SEO-friendly websites that help real people choose your brand." />
 
-  <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+  <!-- Canonical -->
+<link rel="canonical" href="https://forsitmedia.com/aboutus.html">
 
-    <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<!-- Favicons (Google uses PNG/ICO, not SVG) -->
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=9">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=9">
+<link rel="icon" href="/favicon.ico?v=9">
+
+<!-- Optional SVG for browsers (Google ignores) -->
+<link rel="icon" type="image/svg+xml" href="/images/logo.svg?v=9">
+
+<!-- Apple / PWA -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=9">
+<link rel="manifest" href="/site.webmanifest?v=9">
 <meta name="theme-color" content="#111111">
 
   <style>
@@ -537,11 +546,11 @@ img, video { max-width: 100%; height: auto; display: block; }
 <header class="navbar">
   <div class="nav-inner">
     <div class="nav-left">
-      <a href="index.html"><img src="images/logo.svg" alt="ForSit Media logo" class="nav-logo"></a>
-      <a href="index.html" class="nav-brand">ForSit Media</a>
+      <a href="/"><img src="images/logo.svg" alt="ForSit Media logo" class="nav-logo"></a>
+      <a href="/" class="nav-brand">ForSit Media</a>
     </div>
     <nav class="nav-links">
-      <a href="index.html">Home</a>
+      <a href="">Home</a>
         <a href="about-us.html" class="active">About Us</a>
             <div class="has-submenu">
     <button id="servicesBtn" class="nav-dropbtn" aria-haspopup="true"
@@ -566,7 +575,7 @@ img, video { max-width: 100%; height: auto; display: block; }
 <div id="scrim" class="scrim" hidden></div>
 <aside id="drawer" class="mobile-drawer">
   <button id="closeDrawer" class="close"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg></button>
-  <a href="index.html">Home</a>
+  <a href="/">Home</a>
     <a href="aboutus.html" class="active">About Us</a>
    <!-- Services collapsible (mobile) -->
   <button id="mServicesBtn" class="drawer-dropbtn" aria-expanded="false" aria-controls="mServicesMenu">
@@ -581,7 +590,7 @@ img, video { max-width: 100%; height: auto; display: block; }
     <a id="m-srv-social" href="social.html">Social media management</a>
   </div></div>
   <a href="contact.html">Contact</a>
-  <a href="index.html#free-trial-form" class="cta">Start Free Trial</a>
+  <a href="/#free-trial-form" class="cta">Start Free Trial</a>
 </aside>
 
 <main>
@@ -679,7 +688,7 @@ img, video { max-width: 100%; height: auto; display: block; }
   <section class="cta-block">
     <h2>Ready to make your brand the obvious choice?</h2>
     <p>Start with a free, no-strings creative trial. Let’s make something you’re proud to post.</p>
-    <a href="index.html#free-trial-form">Book Free Trial</a>
+    <a href="/#free-trial-form">Book Free Trial</a>
   </section>
 </main>
 
